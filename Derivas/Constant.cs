@@ -8,6 +8,7 @@ using Derivas.Expression;
 
 namespace Derivas.Constant
 {
+    /// <summary>Interface to common numeric constants</summary>
     public interface IDvConstantsProvider<TNum>
     {
         /// <summary>Addition neutral element</summary>
@@ -16,6 +17,9 @@ namespace Derivas.Constant
         DvConstant<TNum> One { get; }
     }
 
+    /// <summary>
+    /// Implementation of <see cref="IDvConstantsProvider{TNum}">constants</see> with any custom type
+    /// </summary>
     public class DvDefaultConstantsProvider<TNum> : IDvConstantsProvider<TNum>
     {
         public DvConstant<TNum> Zero => GetConstant(0);

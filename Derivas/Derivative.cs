@@ -24,19 +24,30 @@ namespace Derivas.Derivative
         public DvDerivative(IDvExpr<TNum> expr, IDvConstantsProvider<TNum> constantsProvider = null)
         {
             ConstantsProvider = constantsProvider ?? new DvDefaultConstantsProvider<TNum>();
-            DerivedExpr = expr switch
-            {
-                DvSymbol<TNum> sym => Get(sym),
-                DvConstant<TNum> con => Get(con),
-                _ => throw new DvDerivativeMismatch(expr.GetType())
-            };
+            DerivedExpr = Get(expr);
         }
+
+        # region interface implementation
 
         TNum IDvExpr<TNum>.Calculate(IDictionary<string, TNum> nameVal) => DerivedExpr.Calculate(nameVal);
         void IDvExpr<TNum>.Simplify() => DerivedExpr.Simplify();
         string IDvExpr<TNum>.ToString() => DerivedExpr.ToString();
 
+        # endregion
+
+        # region derivative calculation
+
+        private IDvExpr<TNum> Get(IDvExpr<TNum> expr)
+            => expr switch
+            {
+                DvSymbol<TNum> sym => Get(sym),
+                DvConstant<TNum> con => Get(con),
+                _ => throw new DvDerivativeMismatch(expr.GetType())
+            };
+
         protected DvConstant<TNum> Get(DvConstant<TNum> expr) => ConstantsProvider.Zero;
         protected DvConstant<TNum> Get(DvSymbol<TNum> expr) => ConstantsProvider.One;
+
+        # endregion
     }
 }
