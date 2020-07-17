@@ -65,6 +65,7 @@ namespace Derivas.Expression
         // Shortcut for userspace code
         public TNum Calculate(TNum val) => val;
 
+
         void IDvExpr<TNum>.Simplify()
         {
         }

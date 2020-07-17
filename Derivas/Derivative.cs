@@ -4,6 +4,7 @@ using System.Text;
 
 using Derivas.Expression;
 using Derivas.Exception;
+using Derivas.Constant;
 
 namespace Derivas.Derivative
 {
@@ -15,17 +16,27 @@ namespace Derivas.Derivative
         }
     }
 
-    public class DvDerivative<TNum>
+    public class DvDerivative<TNum> : IDvExpr<TNum>
     {
-        public static IDvExpr<TNum> Get<TNum>(IDvExpr<TNum> expr) 
-            => expr switch
+        private IDvExpr<TNum> DerivedExpr { get; }
+        public IDvConstantsProvider<TNum> ConstantsProvider { get; set; }
+
+        public DvDerivative(IDvExpr<TNum> expr, IDvConstantsProvider<TNum> constantsProvider = null)
+        {
+            ConstantsProvider = constantsProvider ?? new DvDefaultConstantsProvider<TNum>();
+            DerivedExpr = expr switch
             {
                 DvSymbol<TNum> sym => Get(sym),
                 DvConstant<TNum> con => Get(con),
                 _ => throw new DvDerivativeMismatch(expr.GetType())
             };
+        }
 
-        protected static DvConstant<TNum> Get(DvConstant<TNum> expr) => new DvConstant<TNum>(default(TNum));
-        protected static DvConstant<TNum> Get(DvSymbol<TNum> expr) => new DvConstant<TNum> (default(TNum));
+        TNum IDvExpr<TNum>.Calculate(IDictionary<string, TNum> nameVal) => DerivedExpr.Calculate(nameVal);
+        void IDvExpr<TNum>.Simplify() => DerivedExpr.Simplify();
+        string IDvExpr<TNum>.ToString() => DerivedExpr.ToString();
+
+        protected DvConstant<TNum> Get(DvConstant<TNum> expr) => ConstantsProvider.Zero;
+        protected DvConstant<TNum> Get(DvSymbol<TNum> expr) => ConstantsProvider.One;
     }
 }
