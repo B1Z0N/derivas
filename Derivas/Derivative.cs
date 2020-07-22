@@ -30,8 +30,7 @@ namespace Derivas.Derivative
         # region interface implementation
 
         TNum IDvExpr<TNum>.Calculate(IDictionary<string, TNum> nameVal) => DerivedExpr.Calculate(nameVal);
-        void IDvExpr<TNum>.Simplify() => DerivedExpr.Simplify();
-        string IDvExpr<TNum>.ToString() => DerivedExpr.ToString();
+        string IDvExpr<TNum>.Represent() => DerivedExpr.Represent();
 
         # endregion
 
