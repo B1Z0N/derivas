@@ -17,7 +17,7 @@ namespace Derivas.Expression
     /// common to all binary operators
     /// </summary>
     /// <typeparam name="TNum">Any "numeric" type with operators overloaded(+, -, *, /, ...)</typeparam>
-    public abstract class DvBinOp<TNum> : IDvExpr<TNum>
+    public abstract class DvBinaryOperator<TNum> : IDvExpr<TNum>
     {
         # region base class functionality
 
@@ -26,7 +26,7 @@ namespace Derivas.Expression
         private bool putParentheses { get; set; } = false;
         private char operatorSign { get; }
 
-        public DvBinOp(IDvExpr<TNum> first, IDvExpr<TNum> second, char operatorSign)
+        public DvBinaryOperator(IDvExpr<TNum> first, IDvExpr<TNum> second, char operatorSign)
         {
             enableParenthesesIfApplies(first);
             enableParenthesesIfApplies(second);
@@ -38,7 +38,7 @@ namespace Derivas.Expression
 
         private void enableParenthesesIfApplies(IDvExpr<TNum> expr)
         {
-            var op = expr as DvBinOp<TNum>;
+            var op = expr as DvBinaryOperator<TNum>;
             if (op != null) op.putParentheses = true;
         }
 
@@ -81,9 +81,9 @@ namespace Derivas.Expression
         # endregion
     }
 
-    public class DvAdd<TNum> : DvBinOp<TNum>
+    public class DvAddition<TNum> : DvBinaryOperator<TNum>
     {
-        public DvAdd(IDvExpr<TNum> first, IDvExpr<TNum> second) : base(first, second, '+')
+        public DvAddition(IDvExpr<TNum> first, IDvExpr<TNum> second) : base(first, second, '+')
         {
             Operator = CreateCalcFunc((fst, snd) => exp.Add(fst, snd));
         }
@@ -91,9 +91,9 @@ namespace Derivas.Expression
         protected override Func<TNum, TNum, TNum> Operator { get; }
     }
 
-    public class DvMultiply<TNum> : DvBinOp<TNum>
+    public class DvMultiplication<TNum> : DvBinaryOperator<TNum>
     {
-        public DvMultiply(IDvExpr<TNum> first, IDvExpr<TNum> second) : base(first, second, '*')
+        public DvMultiplication(IDvExpr<TNum> first, IDvExpr<TNum> second) : base(first, second, '*')
         {
             Operator = CreateCalcFunc((fst, snd) => exp.Multiply(fst, snd));
         }
@@ -109,9 +109,9 @@ namespace Derivas.Expression
         }
     }
 
-    public class DvDivide<TNum> : DvBinOp<TNum>
+    public class DvDivision<TNum> : DvBinaryOperator<TNum>
     {
-        public DvDivide(IDvExpr<TNum> first, IDvExpr<TNum> second) : base(first, second, '/')
+        public DvDivision(IDvExpr<TNum> first, IDvExpr<TNum> second) : base(first, second, '/')
         {
             var inner = CreateCalcFunc((fst, snd) => exp.Divide(fst, snd));
             var zero = new DvDefaultConstantsProvider<TNum>().Zero.Val;
@@ -122,9 +122,9 @@ namespace Derivas.Expression
         protected override Func<TNum, TNum, TNum> Operator { get; }
     }
 
-    public class DvSubtract<TNum> : DvBinOp<TNum>
+    public class DvSubtraction<TNum> : DvBinaryOperator<TNum>
     {
-        public DvSubtract(IDvExpr<TNum> first, IDvExpr<TNum> second) : base(first, second, '-')
+        public DvSubtraction(IDvExpr<TNum> first, IDvExpr<TNum> second) : base(first, second, '-')
         {
             Operator = CreateCalcFunc((fst, snd) => exp.Subtract(fst, snd));
         }
