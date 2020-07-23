@@ -6,23 +6,23 @@ using Derivas.Exception;
 
 namespace Derivas.Expression
 {
-   internal class DvConstant<TNum> : IDvExpr<TNum>
+   internal class DvConstant : IDvExpr
     {
-        public TNum Val { get; }
+        public double Val { get; }
 
-        public DvConstant(TNum val)
+        public DvConstant(double val)
         {
             Val = val;
         }
 
-        public TNum Calculate(IDictionary<string, TNum> nameVal) => Val;
+        public double Calculate(IDictionary<string, double> nameVal) => Val;
         public string Represent() => Val.ToString();
 
         ///<summary>Shortcut for userspace code</summary>
-        public TNum Calculate() => Val;
+        public double Calculate() => Val;
     }
 
-    internal class DvSymbol<TNum> : IDvExpr<TNum>
+    internal class DvSymbol : IDvExpr
     {
         public string Name { get; }
 
@@ -31,7 +31,7 @@ namespace Derivas.Expression
             Name = name;
         }
 
-        public TNum Calculate(IDictionary<string, TNum> nameVal)
+        public double Calculate(IDictionary<string, double> nameVal)
         {
             nameVal.TryGetValue(Name, out var val);
             if (val == null) throw new DvSymbolMismatchException(Name);
@@ -42,6 +42,6 @@ namespace Derivas.Expression
         public string Represent() => Name;
 
         ///<summary>Shortcut for userspace code</summary>
-        public TNum Calculate(TNum val) => val;
+        public double Calculate(double val) => val;
     }
 }

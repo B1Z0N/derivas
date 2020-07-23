@@ -4,7 +4,6 @@ using System.Text;
 
 using Derivas.Expression;
 using Derivas.Exception;
-using Derivas.Constant;
 
 namespace Derivas.Expression
 {
@@ -19,36 +18,34 @@ namespace Derivas.Expression
 
 namespace Derivas.Derivative
 {
-    internal class DvDerivative<TNum> : IDvExpr<TNum>
+    internal class DvDerivative : IDvExpr
     {
-        private IDvExpr<TNum> DerivedExpr { get; }
-        public IDvConstantsProvider<TNum> ConstantsProvider { get; set; }
+        private IDvExpr DerivedExpr { get; }
 
-        public DvDerivative(IDvExpr<TNum> expr, IDvConstantsProvider<TNum> constantsProvider = null)
+        public DvDerivative(IDvExpr expr)
         {
-            ConstantsProvider = constantsProvider ?? new DvDefaultConstantsProvider<TNum>();
             DerivedExpr = Get(expr);
         }
 
         # region interface implementation
 
-        TNum IDvExpr<TNum>.Calculate(IDictionary<string, TNum> nameVal) => DerivedExpr.Calculate(nameVal);
-        string IDvExpr<TNum>.Represent() => DerivedExpr.Represent();
+        double IDvExpr.Calculate(IDictionary<string, double> nameVal) => DerivedExpr.Calculate(nameVal);
+        string IDvExpr.Represent() => DerivedExpr.Represent();
 
         # endregion
 
         # region derivative calculation
 
-        private IDvExpr<TNum> Get(IDvExpr<TNum> expr)
+        private IDvExpr Get(IDvExpr expr)
             => expr switch
             {
-                DvSymbol<TNum> sym => Get(sym),
-                DvConstant<TNum> con => Get(con),
+                DvSymbol sym => Get(sym),
+                DvConstant con => Get(con),
                 _ => throw new DvDerivativeMismatch(expr.GetType())
             };
 
-        protected DvConstant<TNum> Get(DvConstant<TNum> expr) => ConstantsProvider.Zero;
-        protected DvConstant<TNum> Get(DvSymbol<TNum> expr) => ConstantsProvider.One;
+        protected DvConstant Get(DvConstant expr) => new DvConstant(0);
+        protected DvConstant Get(DvSymbol expr) => new DvConstant(0);
 
         # endregion
     }
