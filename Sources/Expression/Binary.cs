@@ -17,7 +17,7 @@ namespace Derivas.Expression
     /// common to all binary operators
     /// </summary>
     /// <typeparam name="TNum">Any "numeric" type with operators overloaded(+, -, *, /, ...)</typeparam>
-    public abstract class DvBinaryOperator<TNum> : IDvExpr<TNum>
+    internal abstract class DvBinaryOperator<TNum> : IDvExpr<TNum>
     {
         # region base class functionality
 
@@ -81,7 +81,7 @@ namespace Derivas.Expression
         # endregion
     }
 
-    public class DvAddition<TNum> : DvBinaryOperator<TNum>
+    internal class DvAddition<TNum> : DvBinaryOperator<TNum>
     {
         public DvAddition(IDvExpr<TNum> first, IDvExpr<TNum> second) : base(first, second, '+')
         {
@@ -91,7 +91,7 @@ namespace Derivas.Expression
         protected override Func<TNum, TNum, TNum> Operator { get; }
     }
 
-    public class DvMultiplication<TNum> : DvBinaryOperator<TNum>
+    internal class DvMultiplication<TNum> : DvBinaryOperator<TNum>
     {
         public DvMultiplication(IDvExpr<TNum> first, IDvExpr<TNum> second) : base(first, second, '*')
         {
@@ -101,7 +101,7 @@ namespace Derivas.Expression
         protected override Func<TNum, TNum, TNum> Operator { get; }
     }
 
-    public class DvZeroDivisionException<TNum> : DvBaseException
+    internal class DvZeroDivisionException<TNum> : DvBaseException
     {
         public DvZeroDivisionException(IDvExpr<TNum> quotient)
             : base($"You can't divide anything by zero, particularly {quotient.Represent()}")
@@ -109,7 +109,7 @@ namespace Derivas.Expression
         }
     }
 
-    public class DvDivision<TNum> : DvBinaryOperator<TNum>
+    internal class DvDivision<TNum> : DvBinaryOperator<TNum>
     {
         public DvDivision(IDvExpr<TNum> first, IDvExpr<TNum> second) : base(first, second, '/')
         {
@@ -122,7 +122,7 @@ namespace Derivas.Expression
         protected override Func<TNum, TNum, TNum> Operator { get; }
     }
 
-    public class DvSubtraction<TNum> : DvBinaryOperator<TNum>
+    internal class DvSubtraction<TNum> : DvBinaryOperator<TNum>
     {
         public DvSubtraction(IDvExpr<TNum> first, IDvExpr<TNum> second) : base(first, second, '-')
         {
@@ -131,5 +131,4 @@ namespace Derivas.Expression
 
         protected override Func<TNum, TNum, TNum> Operator { get; }
     }
-
 }

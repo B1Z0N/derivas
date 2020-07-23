@@ -6,17 +6,20 @@ using Derivas.Expression;
 using Derivas.Exception;
 using Derivas.Constant;
 
-namespace Derivas.Derivative
+namespace Derivas.Expression
 {
     public class DvDerivativeMismatch : DvBaseException
     {
-        public DvDerivativeMismatch(Type t) 
+        public DvDerivativeMismatch(Type t)
             : base($"There is no DvDerivative handler for type {t}")
         {
         }
     }
+}
 
-    public class DvDerivative<TNum> : IDvExpr<TNum>
+namespace Derivas.Derivative
+{
+    internal class DvDerivative<TNum> : IDvExpr<TNum>
     {
         private IDvExpr<TNum> DerivedExpr { get; }
         public IDvConstantsProvider<TNum> ConstantsProvider { get; set; }

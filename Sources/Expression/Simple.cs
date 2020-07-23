@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 
+using Derivas.Exception;
+
 namespace Derivas.Expression
 {
-   public class DvConstant<TNum> : IDvExpr<TNum>
+   internal class DvConstant<TNum> : IDvExpr<TNum>
     {
         public TNum Val { get; }
 
@@ -20,7 +22,7 @@ namespace Derivas.Expression
         public TNum Calculate() => Val;
     }
 
-    public class DvSymbol<TNum> : IDvExpr<TNum>
+    internal class DvSymbol<TNum> : IDvExpr<TNum>
     {
         public string Name { get; }
 
