@@ -54,58 +54,63 @@ namespace Derivas.Expression
         public static IDvExpr Mul(object fst, object snd) => new DvMultiplication(CheckExpr(fst), CheckExpr(snd));
         public static IDvExpr Div(object fst, object snd) => new DvDivision(CheckExpr(fst), CheckExpr(snd));
         public static IDvExpr Sub(object fst, object snd) => new DvSubtraction(CheckExpr(fst), CheckExpr(snd));
+        public static IDvExpr Pow(object fst, object snd) => new DvExponantiation(CheckExpr(fst), CheckExpr(snd));
+        
+        public static IDvExpr Log(object of, object _base = null) 
+            => new DvLogarithm(CheckExpr(of), _base == null ?  null : CheckExpr(_base));
+
+        public static IDvExpr Cos(object of) => new DvCosine(CheckExpr(of));
+        public static IDvExpr Sin(object of) => new DvSine(CheckExpr(of));
+        public static IDvExpr Tan(object of) => new DvTangens(CheckExpr(of));
+        public static IDvExpr Cotan(object of) => new DvCotangens(CheckExpr(of));
+        public static IDvExpr Acos(object of) => new DvArccosine(CheckExpr(of));
+        public static IDvExpr Asin(object of) => new DvArcsine(CheckExpr(of));
+        public static IDvExpr Atan(object of) => new DvArctangens(CheckExpr(of));
+        public static IDvExpr Acotan(object of) => new DvArccotangens(CheckExpr(of));
+
 
         # endregion
 
         /// <summary>
         /// Check if expr is convertable to IDvExpr and perform conversions.
-        /// It must be either int(for Const), string(for Sym) of IDvExpr itself
+        /// It must be either numeric(int, double, ...) - for Const, string - for Sym or IDvExpr itself
         /// </summary>
         /// <returns>Converted IDvExpr or an exception if such conversion can't be done</returns>
-        private static IDvExpr CheckExpr(object expr)
-        {
-            if (IsNumericType(expr))
-            {
-                var numericConstant = exp.Constant(expr, expr.GetType());
-                var convertBody = exp.Convert(numericConstant, typeof(double));
-                var lambda = exp.Lambda<Func<double>>(convertBody);
-                double some = lambda.Compile().Invoke();
-                return Const(some);
-            }
-
-            return expr switch
+        private static IDvExpr CheckExpr(object expr) =>
+            IsNumber(expr) ?
+            Const(Convert.ToDouble(expr)) :
+            expr switch
             {
                 string name => Sym(name),
                 IDvExpr expression => expression,
                 _ => throw new DvExpressionMismatch(expr.GetType())
             };
+
+        private static bool IsNumber(object value)
+        {
+            return value is double
+                    || value is int
+                    || value is float
+                    || value is decimal
+                    || value is long
+                    || value is sbyte
+                    || value is byte
+                    || value is short
+                    || value is ushort
+                    || value is uint
+                    || value is ulong
+            ;
         }
 
-        private static bool IsNumericType(object o)
-        {
-            switch (Type.GetTypeCode(o.GetType()))
-            {
-                case TypeCode.Byte:
-                case TypeCode.SByte:
-                case TypeCode.UInt16:
-                case TypeCode.UInt32:
-                case TypeCode.UInt64:
-                case TypeCode.Int16:
-                case TypeCode.Int32:
-                case TypeCode.Int64:
-                case TypeCode.Decimal:
-                case TypeCode.Double:
-                case TypeCode.Single:
-                    return true;
-                default:
-                    return false;
-            }
-        }
+        // TODO: 
+        //  expressions to add:
+        //    arctg, arcct, sh, ch, th, cth
     }
 
-    // TODO: 
-    //  expressions to add:
-    //    raise to the power of, logarithm, 
-    //    sin, arcsin, cos, arccos, tg, ctg
-    //    arctg, arcct, sh, ch, th, cth
+    /// <summary>Some common mathemtaical constants</summary>
+    public readonly struct DvConsts
+    {
+        public static IDvExpr E { get; } = new DvConstant(Math.E);
+        public static IDvExpr PI { get; } = new DvConstant(Math.PI);
+    }
 }

@@ -27,19 +27,16 @@ namespace Derivas.Expression
 
         public DvBinaryOperator(IDvExpr first, IDvExpr second, char operatorSign)
         {
-            enableParenthesesIfApplies(first);
-            enableParenthesesIfApplies(second);
+            putParsOnBin(first);
+            putParsOnBin(second);
 
             this.first = first;
             this.second = second;
             this.operatorSign = operatorSign;
         }
 
-        private void enableParenthesesIfApplies(IDvExpr expr)
-        {
-            var op = expr as DvBinaryOperator;
-            if (op != null) op.putParentheses = true;
-        }
+        public static bool putParsOnBin(IDvExpr expr)
+            => expr is DvBinaryOperator op ? op.putParentheses = true : false;
 
         #endregion
 
@@ -97,9 +94,7 @@ namespace Derivas.Expression
     {
         public DvDivision(IDvExpr first, IDvExpr second) : base(first, second, '/')
         {
-            Func<double, double, double> inner = (fst, snd) => fst / snd;
-            Operator = (fst, snd) => snd == 0.0 ? 
-                throw new DvZeroDivisionException(first) : inner(fst, snd);
+            Operator = (fst, snd) => snd == 0.0 ? throw new DvZeroDivisionException(first) : fst / snd;
         }
 
         protected override Func<double, double, double> Operator { get; }
@@ -110,6 +105,16 @@ namespace Derivas.Expression
         public DvSubtraction(IDvExpr first, IDvExpr second) : base(first, second, '-')
         {
             Operator = (fst, snd) => fst - snd;
+        }
+
+        protected override Func<double, double, double> Operator { get; }
+    }
+
+    internal class DvExponantiation : DvBinaryOperator
+    {
+        public DvExponantiation(IDvExpr first, IDvExpr second) : base(first, second, '^')
+        {
+            Operator = (fst, snd) => Math.Pow(fst, snd);
         }
 
         protected override Func<double, double, double> Operator { get; }

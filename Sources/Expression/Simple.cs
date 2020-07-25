@@ -17,9 +17,6 @@ namespace Derivas.Expression
 
         public double Calculate(IDictionary<string, double> nameVal) => Val;
         public string Represent() => Val.ToString();
-
-        ///<summary>Shortcut for userspace code</summary>
-        public double Calculate() => Val;
     }
 
     internal class DvSymbol : IDvExpr
@@ -31,17 +28,11 @@ namespace Derivas.Expression
             Name = name;
         }
 
-        public double Calculate(IDictionary<string, double> nameVal)
-        {
-            nameVal.TryGetValue(Name, out var val);
-            if (val == null) throw new DvSymbolMismatchException(Name);
-
-            return val;
-        }
+        public double Calculate(IDictionary<string, double> nameVal) => 
+            nameVal.ContainsKey(Name) ? 
+            nameVal[Name] : 
+            throw new DvSymbolMismatchException(Name);
 
         public string Represent() => Name;
-
-        ///<summary>Shortcut for userspace code</summary>
-        public double Calculate(double val) => val;
     }
 }
