@@ -1,9 +1,12 @@
 ﻿using System;
-using System.Text;
+using System.Linq;
 using System.Collections.Generic;
+
+
 
 using Derivas.Exception;
 using exp = System.Linq.Expressions.Expression;
+
 
 namespace Derivas.Exception
 {
@@ -50,8 +53,8 @@ namespace Derivas.Expression
         public static IDvExpr Const(double n) => new DvConstant(n);
         public static IDvExpr Sym(string name) => new DvSymbol(name);
 
-        public static IDvExpr Add(object fst, object snd) => new DvAddition(CheckExpr(fst), CheckExpr(snd));
-        public static IDvExpr Mul(object fst, object snd) => new DvMultiplication(CheckExpr(fst), CheckExpr(snd));
+        public static IDvExpr Add(params object[] args) => new DvAddition(args.Select(CheckExpr).ToArray());
+        public static IDvExpr Mul(params object[] args) => new DvMultiplication(args.Select(CheckExpr).ToArray());
         public static IDvExpr Div(object fst, object snd) => new DvDivision(CheckExpr(fst), CheckExpr(snd));
         public static IDvExpr Sub(object fst, object snd) => new DvSubtraction(CheckExpr(fst), CheckExpr(snd));
         public static IDvExpr Pow(object fst, object snd) => new DvExponantiation(CheckExpr(fst), CheckExpr(snd));

@@ -14,7 +14,6 @@ namespace Derivas.Expression
         public DvLogarithm(IDvExpr _of, IDvExpr _base = null)
         {
             (Of, Base) = (_of, _base ?? DvConsts.E);
-            DvBinaryOperator.putParsOnBin(Base);
         }
 
         public double Calculate(IDictionary<string, double> nameVal)
@@ -36,7 +35,6 @@ namespace Derivas.Expression
         public DvSingleArgFunc(IDvExpr of, Func<double, double> calcF, string funName)
         {
             (Of, CalcFunc, FuncName) = (of, calcF, funName);
-            DvBinaryOperator.putParsOnBin(Of);
         }
 
         public double Calculate(IDictionary<string, double> nameVal) => CalcFunc(Of.Calculate(nameVal));
