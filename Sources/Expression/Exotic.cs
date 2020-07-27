@@ -19,9 +19,9 @@ namespace Derivas.Expression
         public double Calculate(IDictionary<string, double> nameVal)
             => Math.Log(Of.Calculate(nameVal), Base.Calculate(nameVal));
 
-        public string Represent() 
-            => Base == DvConsts.E ? 
-            $"log({Of.Represent()})": 
+        public string Represent()
+            => Base == DvConsts.E ?
+            $"log({Of.Represent()})" :
             $"log({Of.Represent()}, base={Base.Represent()})";
     }
 
@@ -42,8 +42,8 @@ namespace Derivas.Expression
         public string Represent() => $"{FuncName}({Of.Represent()})";
     }
 
-    internal class DvCosine : DvSingleArgFunc 
-    { 
+    internal class DvCosine : DvSingleArgFunc
+    {
         public DvCosine(IDvExpr of) : base(of, Math.Cos, "cos") { }
     }
 

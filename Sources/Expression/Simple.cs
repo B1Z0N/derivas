@@ -6,7 +6,7 @@ using Derivas.Exception;
 
 namespace Derivas.Expression
 {
-   internal class DvConstant : IDvExpr
+    internal class DvConstant : IDvExpr
     {
         public double Val { get; }
 
@@ -28,9 +28,9 @@ namespace Derivas.Expression
             Name = name;
         }
 
-        public double Calculate(IDictionary<string, double> nameVal) => 
-            nameVal.ContainsKey(Name) ? 
-            nameVal[Name] : 
+        public double Calculate(IDictionary<string, double> nameVal) =>
+            nameVal.ContainsKey(Name) ?
+            nameVal[Name] :
             throw new DvSymbolMismatchException(Name);
 
         public string Represent() => Name;

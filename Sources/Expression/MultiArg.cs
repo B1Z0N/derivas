@@ -115,8 +115,8 @@ namespace Derivas.Expression
 
     internal class DvSubtraction : DvBinaryOperator
     {
-        public DvSubtraction(IDvExpr first, IDvExpr second) : base(first, second) 
-        { 
+        public DvSubtraction(IDvExpr first, IDvExpr second) : base(first, second)
+        {
         }
 
         protected override Func<double, double, double> BinaryOperator { get; } = (fst, snd) => fst - snd;

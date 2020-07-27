@@ -58,9 +58,9 @@ namespace Derivas.Expression
         public static IDvExpr Div(object fst, object snd) => new DvDivision(CheckExpr(fst), CheckExpr(snd));
         public static IDvExpr Sub(object fst, object snd) => new DvSubtraction(CheckExpr(fst), CheckExpr(snd));
         public static IDvExpr Pow(object fst, object snd) => new DvExponantiation(CheckExpr(fst), CheckExpr(snd));
-        
-        public static IDvExpr Log(object of, object _base = null) 
-            => new DvLogarithm(CheckExpr(of), _base == null ?  null : CheckExpr(_base));
+
+        public static IDvExpr Log(object of, object _base = null)
+            => new DvLogarithm(CheckExpr(of), _base == null ? null : CheckExpr(_base));
 
         public static IDvExpr Cos(object of) => new DvCosine(CheckExpr(of));
         public static IDvExpr Sin(object of) => new DvSine(CheckExpr(of));
