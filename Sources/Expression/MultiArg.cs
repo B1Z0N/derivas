@@ -19,47 +19,37 @@ namespace Derivas.Exception
 namespace Derivas.Expression
 {
     /// <summary>
-    /// Commodity abstract class that conatins functionality 
-    /// common to all binary operators
+    /// Commodity abstract class that conatins functionality common to all binary operators
     /// </summary>
-    /// <typeparam name="double">Any "numeric" type with operators overloaded(+, -, *, /, ...)</typeparam>
     internal abstract class DvMultiArgOperator : IDvExpr
     {
         # region base class functionality
 
         public IDvExpr[] Operands { get; protected set; }
-        private string OperatorSign { get; }
-        protected static IDictionary<Type, int> Priorities { get; } = new Dictionary<Type, int>();
 
-        public DvMultiArgOperator(string operatorSign, params IDvExpr[] lst)
+        public DvMultiArgOperator(params IDvExpr[] lst)
         {
-            this.Operands = lst;
-            this.OperatorSign = operatorSign;
+            Operands = lst;
         }
 
         #endregion
 
-        #region interface implementation
-
+        #region interface implem
         public double Calculate(IDictionary<string, double> nameVal)
-            => Operator(Operands.Select((IDvExpr el) => el.Calculate(nameVal)).ToArray());
+        => Operator(Operands.Select((IDvExpr el) => el.Calculate(nameVal)).ToArray());
 
         public string Represent()
         {
             var withPars = new List<string>();
             foreach (var el in Operands)
             {
-                if (el is DvMultiArgOperator op && Priorities[el.GetType()] < Priorities[GetType()])
-                {
-                    withPars.Add($"({el.Represent()})");
-                }
-                else
-                {
-                    withPars.Add(el.Represent());
-                }
+                withPars.Add(
+                    el is DvMultiArgOperator op && Priority > op.Priority ?
+                    $"({el.Represent()})" : el.Represent()
+                );
             }
 
-            return String.Join($" {OperatorSign} ", withPars);
+            return String.Join($" {Sign} ", withPars);
         }
 
         #endregion
@@ -67,36 +57,40 @@ namespace Derivas.Expression
         # region abstract members specific to any operator
 
         protected abstract Func<double[], double> Operator { get; }
+        protected abstract int Priority { get; }
+        protected abstract string Sign { get; }
 
         # endregion
     }
 
     internal class DvAddition : DvMultiArgOperator
     {
-        public DvAddition(params IDvExpr[] operands) : base("+", operands)
+        public DvAddition(params IDvExpr[] operands) : base(operands)
         {
-            Operator = (double[] args) => args.Aggregate(0d, (acc, el) => acc + el);
-            Priorities[GetType()] = 0;
         }
 
         protected override Func<double[], double> Operator { get; }
+            = (double[] args) => args.Aggregate(0d, (acc, el) => acc + el);
+        protected override int Priority { get; } = 0;
+        protected override string Sign { get; } = "+";
     }
 
     internal class DvMultiplication : DvMultiArgOperator
     {
-        public DvMultiplication(params IDvExpr[] operands) : base("*", operands)
+        public DvMultiplication(params IDvExpr[] operands) : base(operands)
         {
-            Operator = (double[] args) => args.Aggregate(1d, (acc, el) => acc * el);
-            Priorities[GetType()] = 1;
         }
 
         protected override Func<double[], double> Operator { get; }
+            = (double[] args) => args.Aggregate(1d, (acc, el) => acc * el);
+        protected override int Priority { get; } = 1;
+        protected override string Sign { get; } = "*";
     }
 
     internal abstract class DvBinaryOperator : DvMultiArgOperator
     {
-        public DvBinaryOperator(IDvExpr first, IDvExpr second, string opSign) 
-            : base (opSign, first, second)
+        public DvBinaryOperator(IDvExpr first, IDvExpr second)
+            : base(first, second)
         {
             Operator = (double[] args) => BinaryOperator(args[0], args[1]);
         }
@@ -108,36 +102,37 @@ namespace Derivas.Expression
 
     internal class DvDivision : DvBinaryOperator
     {
-        public DvDivision(IDvExpr first, IDvExpr second) : base(first, second, "/")
+        public DvDivision(IDvExpr first, IDvExpr second) : base(first, second)
         {
-
             BinaryOperator = (fst, snd) => snd == 0 ? throw new DvZeroDivisionException(first) : fst / snd;
-            Priorities[GetType()] = 1;
         }
 
         protected override Func<double, double, double> BinaryOperator { get; }
+        protected override string Sign { get; } = "/";
+        protected override int Priority { get; } = 1;
+
     }
 
     internal class DvSubtraction : DvBinaryOperator
     {
-        public DvSubtraction(IDvExpr first, IDvExpr second) : base(first, second, "-")
-        {
-
-            BinaryOperator = (fst, snd) => fst - snd;
-            Priorities[GetType()] = 0;
+        public DvSubtraction(IDvExpr first, IDvExpr second) : base(first, second) 
+        { 
         }
 
-        protected override Func<double, double, double> BinaryOperator { get; }
+        protected override Func<double, double, double> BinaryOperator { get; } = (fst, snd) => fst - snd;
+        protected override string Sign { get; } = "-";
+        protected override int Priority { get; } = 0;
     }
 
     internal class DvExponantiation : DvBinaryOperator
     {
-        public DvExponantiation(IDvExpr first, IDvExpr second) : base(first, second, "^")
+        public DvExponantiation(IDvExpr first, IDvExpr second) : base(first, second)
         {
-            BinaryOperator = (fst, snd) => Math.Pow(fst, snd);
-            Priorities[GetType()] = 2;
         }
 
-        protected override Func<double, double, double> BinaryOperator { get; }
+        protected override Func<double, double, double> BinaryOperator { get; } = (fst, snd) => Math.Pow(fst, snd);
+        protected override string Sign { get; } = "^";
+        protected override int Priority { get; } = 2;
     }
+
 }
