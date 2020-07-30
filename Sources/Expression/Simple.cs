@@ -15,18 +15,20 @@ namespace Derivas.Expression
         public double Calculate(IDictionary<string, double> nameVal) => Val;
         public string Represent() => Val.ToString();
 
+        public IDvExpr Simplify() => new DvConstant(Val);
+
         #region equality and related stuff
 
         public override bool Equals(object obj) => Equals(obj as DvConstant);
-        
-        public bool Equals(DvConstant other) 
+
+        public bool Equals(DvConstant other)
             => other != null && Val == other.Val;
-        
+
         public override int GetHashCode() => HashCode.Combine(Val);
-        
+
         public static bool operator ==(DvConstant left, DvConstant right)
             => EqualityComparer<DvConstant>.Default.Equals(left, right);
-        
+
         public static bool operator !=(DvConstant left, DvConstant right)
             => !(left == right);
 
@@ -39,11 +41,13 @@ namespace Derivas.Expression
 
         public DvSymbol(string name) => Name = name;
 
-        public double Calculate(IDictionary<string, double> nameVal) 
-            => nameVal.ContainsKey(Name) ? nameVal[Name] 
+        public double Calculate(IDictionary<string, double> nameVal)
+            => nameVal.ContainsKey(Name) ? nameVal[Name]
             : throw new DvSymbolMismatchException(Name);
 
         public string Represent() => Name;
+
+        public IDvExpr Simplify() => new DvSymbol(Name);
 
         #region equality and related stuff
 

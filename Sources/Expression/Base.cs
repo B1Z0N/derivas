@@ -38,6 +38,12 @@ namespace Derivas.Expression
         double Calculate(IDictionary<string, double> nameVal);
 
         string Represent();
+
+        /// <summary>Simplify an expression</summary>
+        /// <example>
+        /// `1*0 + x^0 - x + log(1)` => `1 - x`
+        /// </example>
+        IDvExpr Simplify();
     }
 
     /// <summary>
@@ -47,7 +53,7 @@ namespace Derivas.Expression
     /// <typeparam name="double">Any "numeric" type with operators overloaded(+, -, *, /, ...)</typeparam>
     public static class DvExpr
     {
-        # region public API shortcut methods
+        #region public API shortcut methods
 
         public static IDvExpr Const(double n) => new DvConstant(n);
         public static IDvExpr Sym(string name) => new DvSymbol(name);
@@ -71,7 +77,7 @@ namespace Derivas.Expression
         public static IDvExpr Acotan(object of) => new DvArccotangens(CheckExpr(of));
 
 
-        # endregion
+        #endregion
 
         /// <summary>
         /// Check if expr is convertable to IDvExpr and perform conversions.

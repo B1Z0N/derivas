@@ -30,19 +30,19 @@ namespace Derivas.Derivative
             DerivedExpr = Get(expr);
         }
 
-        # region interface implementation
+        #region interface implementation
 
         public double Calculate(IDictionary<string, double> nameVal) => DerivedExpr.Calculate(nameVal);
         public string Represent() => DerivedExpr.Represent();
 
-        # endregion
+        #endregion
 
-        # region derivative calculation
+        #region derivative calculation
 
         private IDvExpr Get(IDvExpr expr) => throw new DvDerivativeMismatch(expr.GetType());
 
         protected IDvExpr Get(DvConstant con) => Const(0);
-        protected IDvExpr Get(DvSymbol sym) 
+        protected IDvExpr Get(DvSymbol sym)
             => Const(sym.Equals(Symbol) ? 1 : 0);
 
         protected IDvExpr Get(DvAddition expr)
@@ -75,7 +75,7 @@ namespace Derivas.Derivative
             IDvExpr bas = expr.First, pow = expr.Second;
             return Mul(
                 expr, Add(
-                    Mul(Get(pow), Log(bas)), 
+                    Mul(Get(pow), Log(bas)),
                     Div(Mul(pow, Get(bas)), bas)
                 )
             );
@@ -92,6 +92,11 @@ namespace Derivas.Derivative
             );
         }
 
-        # endregion
+        public IDvExpr Simplify()
+        {
+            throw new NotImplementedException();
+        }
+
+        #endregion
     }
 }
