@@ -25,7 +25,7 @@ namespace Derivas.Expression
     {
         # region base class functionality
 
-        public IDvExpr[] Operands { get; protected set; }
+        public IEnumerable<IDvExpr> Operands { get; protected set; }
 
         public DvMultiArgOperator(params IDvExpr[] lst)
         {
@@ -75,29 +75,33 @@ namespace Derivas.Expression
         protected override string Sign { get; } = "+";
     }
 
-    internal class DvMultiplication : DvMultiArgOperator
-    {
-        public DvMultiplication(params IDvExpr[] operands) : base(operands)
-        {
-        }
-
-        protected override Func<double[], double> Operator { get; }
-            = (double[] args) => args.Aggregate(1d, (acc, el) => acc * el);
-        protected override int Priority { get; } = 1;
-        protected override string Sign { get; } = "*";
-    }
-
     internal abstract class DvBinaryOperator : DvMultiArgOperator
     {
+        public IDvExpr First { get; }
+        public IDvExpr Second { get; }
+
         public DvBinaryOperator(IDvExpr first, IDvExpr second)
             : base(first, second)
         {
+            (First, Second) = (first, second);
             Operator = (double[] args) => BinaryOperator(args[0], args[1]);
         }
 
-
         protected override Func<double[], double> Operator { get; }
         protected abstract Func<double, double, double> BinaryOperator { get; }
+    }
+
+    internal class DvMultiplication : DvBinaryOperator
+    {
+        public DvMultiplication(IDvExpr first, IDvExpr second)
+            : base(first, second)
+        {
+        }
+
+        protected override Func<double, double, double> BinaryOperator { get; }
+            = (fst, snd) => fst * snd;
+        protected override int Priority { get; } = 1;
+        protected override string Sign { get; } = "*";
     }
 
     internal class DvDivision : DvBinaryOperator
