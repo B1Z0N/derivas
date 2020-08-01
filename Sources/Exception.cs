@@ -13,5 +13,4 @@ namespace Derivas.Exception
         {
         }
     }
-
 }

@@ -15,8 +15,6 @@ namespace Derivas.Expression
         public double Calculate(IDictionary<string, double> nameVal) => Val;
         public string Represent() => Val.ToString();
 
-        public IDvExpr Simplify() => new DvConstant(Val);
-
         #region equality and related stuff
 
         public override bool Equals(object obj) => Equals(obj as DvConstant);
@@ -46,8 +44,6 @@ namespace Derivas.Expression
             : throw new DvSymbolMismatchException(Name);
 
         public string Represent() => Name;
-
-        public IDvExpr Simplify() => new DvSymbol(Name);
 
         #region equality and related stuff
 

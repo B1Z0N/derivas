@@ -22,36 +22,15 @@ namespace Derivas.Expression
         public string Represent()
             => Base == DvConsts.E ? $"log({Of.Represent()})" :
             $"log({Of.Represent()}, base={Base.Represent()})";
-
-        public IDvExpr Simplify()
-        {
-            var simpleOf = Of.Simplify();
-            var simpleBase = Base.Simplify();
-
-            if (simpleOf is DvConstant of)
-            {
-                if (of.Val == 1d)
-                {
-                    return new DvConstant(0);
-                }
-                else if (simpleBase is DvConstant bas)
-                {
-                    var res = Calculate(new Dictionary<string, double>());
-                    return new DvConstant(res);
-                }
-            }
-
-            return new DvLogarithm(simpleOf, simpleBase);
-        }
     }
 
-    internal abstract class DvSingleArgFunc : IDvExpr
+    internal abstract class DvSingleArgOperator : IDvExpr
     {
         public IDvExpr Of { get; protected set; }
         private Func<double, double> CalcFunc { get; }
         private string FuncName { get; }
 
-        public DvSingleArgFunc(IDvExpr of, Func<double, double> calcF, string funName)
+        public DvSingleArgOperator(IDvExpr of, Func<double, double> calcF, string funName)
         {
             (Of, CalcFunc, FuncName) = (of, calcF, funName);
         }
@@ -60,78 +39,69 @@ namespace Derivas.Expression
 
         public string Represent() => $"{FuncName}({Of.Represent()})";
 
-        public IDvExpr Simplify()
-        {
-            var simpleOf = Of.Simplify();
-            return ToConstant(simpleOf) ?? CreateInstance(simpleOf);
-        }
-
-        public abstract IDvExpr CreateInstance(IDvExpr of);
-
-        private IDvExpr ToConstant(IDvExpr of) => !(of is DvConstant) ? null
-            : new DvConstant(Calculate(new Dictionary<string, double>()));
+        protected abstract DvSingleArgOperator CreateInstance(IDvExpr of);
     }
 
-    internal class DvCosine : DvSingleArgFunc
+    internal class DvCosine : DvSingleArgOperator
     {
         public DvCosine(IDvExpr of) : base(of, Math.Cos, "cos") { }
 
-        public override IDvExpr CreateInstance(IDvExpr of) => new DvCosine(of);
+        protected override DvSingleArgOperator CreateInstance(IDvExpr of) => new DvCosine(of);
     }
 
-    internal class DvSine : DvSingleArgFunc
+    internal class DvSine : DvSingleArgOperator
     {
         public DvSine(IDvExpr of) : base(of, Math.Sin, "sin") { }
 
-        public override IDvExpr CreateInstance(IDvExpr of) => new DvSine(of);
+        protected override DvSingleArgOperator CreateInstance(IDvExpr of) => new DvSine(of);
 
     }
 
-    internal class DvTangens : DvSingleArgFunc
+    internal class DvTangens : DvSingleArgOperator
     {
         public DvTangens(IDvExpr of) : base(of, Math.Tan, "tg") { }
 
-        public override IDvExpr CreateInstance(IDvExpr of) => new DvTangens(of);
+        protected override DvSingleArgOperator CreateInstance(IDvExpr of) => new DvTangens(of);
     }
 
-    internal class DvCotangens : DvSingleArgFunc
+    internal class DvCotangens : DvSingleArgOperator
     {
         private static Func<double, double> Cotan = (of) => 1 / Math.Tan(of);
         public DvCotangens(IDvExpr of) : base(of, Cotan, "ctg") { }
 
-        public override IDvExpr CreateInstance(IDvExpr of) => new DvCotangens(of);
+        protected override DvSingleArgOperator CreateInstance(IDvExpr of) => new DvCotangens(of);
 
     }
 
-    internal class DvArccosine : DvSingleArgFunc
+    internal class DvArccosine : DvSingleArgOperator
     {
         public DvArccosine(IDvExpr of) : base(of, Math.Acos, "arccos") { }
 
-        public override IDvExpr CreateInstance(IDvExpr of) => new DvArccosine(of);
+        protected override DvSingleArgOperator CreateInstance(IDvExpr of) => new DvArccosine(of);
 
     }
 
-    internal class DvArcsine : DvSingleArgFunc
+    internal class DvArcsine : DvSingleArgOperator
     {
         public DvArcsine(IDvExpr of) : base(of, Math.Asin, "arcsin") { }
 
-        public override IDvExpr CreateInstance(IDvExpr of) => new DvArcsine(of);
+        protected override DvSingleArgOperator CreateInstance(IDvExpr of) => new DvArcsine(of);
 
     }
 
-    internal class DvArctangens : DvSingleArgFunc
+    internal class DvArctangens : DvSingleArgOperator
     {
         public DvArctangens(IDvExpr of) : base(of, Math.Atan, "arctg") { }
 
-        public override IDvExpr CreateInstance(IDvExpr of) => new DvArctangens(of);
+        protected override DvSingleArgOperator CreateInstance(IDvExpr of) => new DvArctangens(of);
     }
 
-    internal class DvArccotangens : DvSingleArgFunc
+    internal class DvArccotangens : DvSingleArgOperator
     {
         private static Func<double, double> Arccotan = (of) => Math.PI / 2 - Math.Atan(of);
         public DvArccotangens(IDvExpr of) : base(of, Arccotan, "arcctg") { }
 
-        public override IDvExpr CreateInstance(IDvExpr of) => new DvArccotangens(of);
+        protected override DvSingleArgOperator CreateInstance(IDvExpr of) => new DvArccotangens(of);
 
     }
 }

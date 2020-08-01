@@ -38,12 +38,6 @@ namespace Derivas.Expression
         double Calculate(IDictionary<string, double> nameVal);
 
         string Represent();
-
-        /// <summary>Simplify an expression</summary>
-        /// <example>
-        /// `1*0 + x^0 - x + log(1)` => `1 - x`
-        /// </example>
-        IDvExpr Simplify();
     }
 
     /// <summary>
@@ -75,7 +69,6 @@ namespace Derivas.Expression
         public static IDvExpr Asin(object of) => new DvArcsine(CheckExpr(of));
         public static IDvExpr Atan(object of) => new DvArctangens(CheckExpr(of));
         public static IDvExpr Acotan(object of) => new DvArccotangens(CheckExpr(of));
-
 
         #endregion
 
@@ -112,7 +105,7 @@ namespace Derivas.Expression
 
         // TODO: 
         //  expressions to add:
-        //    arctg, arcct, sh, ch, th, cth
+        //  sh, ch, th, cth
     }
 
     /// <summary>Some common mathemtaical constants</summary>

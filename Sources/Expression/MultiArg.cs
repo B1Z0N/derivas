@@ -52,7 +52,7 @@ namespace Derivas.Expression
             return String.Join($" {Sign} ", withPars);
         }
 
-        public abstract IDvExpr Simplify();
+        protected abstract DvMultiArgOperator CreateInstance(params IDvExpr[] operands);
 
         #endregion
 
@@ -76,9 +76,8 @@ namespace Derivas.Expression
         protected override int Priority { get; } = 0;
         protected override string Sign { get; } = "+";
 
-        public override IDvExpr Simplify() => new DvAddition(
-            Operands.Select(el => el.Simplify()).ToArray()
-        );
+        protected override DvMultiArgOperator CreateInstance(params IDvExpr[] operands)
+            => new DvAddition(operands.ToArray());
     }
 
     internal abstract class DvBinaryOperator : DvMultiArgOperator
@@ -109,9 +108,8 @@ namespace Derivas.Expression
         protected override int Priority { get; } = 1;
         protected override string Sign { get; } = "*";
 
-        public override IDvExpr Simplify() => new DvMultiplication(
-            First.Simplify(), Second.Simplify()
-        );
+        protected override DvMultiArgOperator CreateInstance(params IDvExpr[] operands)
+            => new DvMultiplication(operands[0], operands[1]);
     }
 
     internal class DvDivision : DvBinaryOperator
@@ -125,10 +123,8 @@ namespace Derivas.Expression
         protected override string Sign { get; } = "/";
         protected override int Priority { get; } = 1;
 
-        public override IDvExpr Simplify() => new DvDivision(
-            First.Simplify(), Second.Simplify()
-        );
-
+        protected override DvMultiArgOperator CreateInstance(params IDvExpr[] operands)
+            => new DvDivision(operands[0], operands[1]);
     }
 
     internal class DvSubtraction : DvBinaryOperator
@@ -141,9 +137,8 @@ namespace Derivas.Expression
         protected override string Sign { get; } = "-";
         protected override int Priority { get; } = 0;
 
-        public override IDvExpr Simplify() => new DvSubtraction(
-            First.Simplify(), Second.Simplify()
-        );
+        protected override DvMultiArgOperator CreateInstance(params IDvExpr[] operands)
+            => new DvSubtraction(operands[0], operands[1]);
     }
 
     internal class DvExponantiation : DvBinaryOperator
@@ -156,9 +151,8 @@ namespace Derivas.Expression
         protected override string Sign { get; } = "^";
         protected override int Priority { get; } = 2;
 
-        public override IDvExpr Simplify() => new DvExponantiation(
-            First.Simplify(), Second.Simplify()
-        );
+        protected override DvMultiArgOperator CreateInstance(params IDvExpr[] operands)
+            => new DvExponantiation(operands[0], operands[1]);
     }
 
 }
