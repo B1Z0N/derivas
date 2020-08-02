@@ -4,9 +4,7 @@ using System.Text;
 
 namespace Derivas.Utils
 {
-    internal interface IInstanceInfo<Base>
+    public class NameVal : Dictionary<string, double>, IDictionary<string, double> 
     {
-        Type GetType();
-        Base CreateInstance(params object[] args);
     }
 }
