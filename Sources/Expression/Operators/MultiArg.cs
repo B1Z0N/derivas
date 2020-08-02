@@ -8,14 +8,14 @@ namespace Derivas.Expression
 {
     /// <summary>
     /// Abstract class to define functionality and interface(in broader sense)
-    /// to all nongeneric Operator functionality
+    /// to all nongeneric MultiArgOperator functionality
     /// </summary>
-    internal abstract class Operator : Expr
+    internal abstract class MultiArgOperator : Expr
     {
         #region abstract members specific to any operator
 
-        public abstract string Sign { get; }
-        public abstract int Priority { get; }
+        protected abstract string Sign { get; }
+        protected abstract int Priority { get; }
         protected abstract Func<double[], double> OpFunc { get; }
 
         #endregion
@@ -25,7 +25,7 @@ namespace Derivas.Expression
         public IEnumerable<Expr> Operands => Operands_;
         protected List<Expr> Operands_;
 
-        public Operator(params Expr[] lst)
+        public MultiArgOperator(params Expr[] lst)
             => Operands_ = new List<Expr>(lst);
 
         #endregion
@@ -45,7 +45,7 @@ namespace Derivas.Expression
             foreach (var el in Operands_)
             {
                 withPars.Add(
-                    el is Operator op && Priority > op.Priority ?
+                    el is MultiArgOperator op && Priority > op.Priority ?
                     $"({el.Represent()})" : el.Represent()
                 );
             }
@@ -59,8 +59,8 @@ namespace Derivas.Expression
 
         public override bool Equals(Expr other)
         {
-            var op = other as Operator;
-            return op != null && ConcreteType == op.ConcreteType &&
+            var op = other as MultiArgOperator;
+            return op != null && GetType() == other.GetType() &&
                 Operands_.SequenceEqual(op.Operands_);
         }
 
@@ -78,8 +78,8 @@ namespace Derivas.Expression
             return hash.ToHashCode();
         }
 
-        public static bool operator ==(Operator fst, Operator snd) => fst.Equals(snd);
-        public static bool operator !=(Operator fst, Operator snd) => !fst.Equals(snd);
+        public static bool operator ==(MultiArgOperator fst, MultiArgOperator snd) => fst.Equals(snd);
+        public static bool operator !=(MultiArgOperator fst, MultiArgOperator snd) => !fst.Equals(snd);
 
         #endregion
     }

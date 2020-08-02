@@ -22,6 +22,8 @@ namespace Derivas.Expression
     {
         public double Val { get; }
 
+        public Constant(double val) => Val = val;
+
         public override double Calculate(NameVal concrete) => Val;
         public override string Represent() => $"{Val}";
 
@@ -38,6 +40,8 @@ namespace Derivas.Expression
     internal class Symbol : Expr
     {
         public string Name { get; }
+
+        public Symbol(string name) => Name = name;
 
         public override double Calculate(NameVal concrete) 
             => concrete.ContainsKey(Name) ? concrete[Name] 

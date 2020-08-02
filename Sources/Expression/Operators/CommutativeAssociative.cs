@@ -5,7 +5,7 @@ using System.Text;
 namespace Derivas.Expression
 {
 
-    internal abstract class CommutativeAssociativeOperator : Operator
+    internal abstract class CommutativeAssociativeOperator : MultiArgOperator
     {
     }
 }

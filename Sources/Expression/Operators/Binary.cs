@@ -5,20 +5,9 @@ using System.Text;
 using Derivas.Exception;
 using Derivas.Expression;
 
-namespace Derivas.Exception
-{
-    internal class DvZeroDivisionException : DvBaseException
-    {
-        public DvZeroDivisionException(Expr quotient)
-            : base($"You can't divide anything by zero, particularly {quotient.Represent()}")
-        {
-        }
-    }
-}
-
 namespace Derivas.Expression
 {
-    internal abstract class BinaryOperator : Operator
+    internal class BinaryOperator : MultiArgOperator
     {
         public Expr First
         {
@@ -32,26 +21,29 @@ namespace Derivas.Expression
             protected set => Operands_[1] = value;
         }
 
-        protected BinaryOperator(Expr fst, Expr snd, string sign, int prio)
+        public BinaryOperator(
+            Expr fst, Expr snd, string sign, int prio,
+            Func<double, double, double> op)
         {
             (First, Second, Sign, Priority) = (fst, snd, sign, prio);
-            OpFunc = (double[] args) => BinFunc(args[0], args[1]);
+            OpFunc = (double[] args) => op(args[0], args[1]);
         }
 
-        protected abstract Func<double, double, double> BinFunc { get; }
         protected override Func<double[], double> OpFunc { get; }
-        public override int Priority { get; }
-        public override string Sign { get; }
+        protected override int Priority { get; }
+        protected override string Sign { get; }
     }
 
-    internal class Division : BinaryOperator
+    internal static partial class OperatorCollection
     {
-        protected override Func<double, double, double> BinFunc { get; }
+        public static Expr Division(Expr fst, Expr snd) 
+            => new BinaryOperator(fst, snd, "/", 1, (fst, snd) => fst / snd);
 
-        public Division(Expr fst, Expr snd) : base(fst, snd, "/", 1) 
-        {
-            BinFunc = (fst, snd) => snd != 0d ? fst / snd : 
-                throw new DvZeroDivisionException(Second);
-        }
+        public static Expr Subtraction(Expr fst, Expr snd)
+            => new BinaryOperator(fst, snd, "-", 0, (fst, snd) => fst - snd);
+
+        public static Expr Power(Expr bas, Expr pow) => new BinaryOperator(
+            bas, pow, "^", 2, (bas, pow) => Math.Pow(bas, pow)
+        );
     }
 }
