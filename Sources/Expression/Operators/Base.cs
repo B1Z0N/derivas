@@ -10,16 +10,13 @@ namespace Derivas.Expression
     /// Abstract class to define functionality and interface(in broader sense)
     /// to all nongeneric Operator functionality
     /// </summary>
-    internal abstract class BaseOperator : Expr
+    internal abstract class Operator : Expr
     {
-
         #region abstract members specific to any operator
 
-        protected abstract Func<double[], double> OpFunc { get; }
-        public abstract int Priority { get; }
         public abstract string Sign { get; }
-
-        protected abstract Type ConcreteType { get; }
+        public abstract int Priority { get; }
+        protected abstract Func<double[], double> OpFunc { get; }
 
         #endregion
 
@@ -28,7 +25,7 @@ namespace Derivas.Expression
         public IEnumerable<Expr> Operands => Operands_;
         protected List<Expr> Operands_;
 
-        public BaseOperator(params Expr[] lst)
+        public Operator(params Expr[] lst)
             => Operands_ = new List<Expr>(lst);
 
         #endregion
@@ -48,7 +45,7 @@ namespace Derivas.Expression
             foreach (var el in Operands_)
             {
                 withPars.Add(
-                    el is BaseOperator op && Priority > op.Priority ?
+                    el is Operator op && Priority > op.Priority ?
                     $"({el.Represent()})" : el.Represent()
                 );
             }
@@ -62,7 +59,7 @@ namespace Derivas.Expression
 
         public override bool Equals(Expr other)
         {
-            var op = other as BaseOperator;
+            var op = other as Operator;
             return op != null && ConcreteType == op.ConcreteType &&
                 Operands_.SequenceEqual(op.Operands_);
         }
@@ -77,35 +74,13 @@ namespace Derivas.Expression
                 hash.Add(item);
             }
 
-            hash.Add(ConcreteType);
+            hash.Add(this.GetType());
             return hash.ToHashCode();
         }
 
-        public static bool operator ==(BaseOperator fst, BaseOperator snd) => fst.Equals(snd);
-        public static bool operator !=(BaseOperator fst, BaseOperator snd) => !fst.Equals(snd);
+        public static bool operator ==(Operator fst, Operator snd) => fst.Equals(snd);
+        public static bool operator !=(Operator fst, Operator snd) => !fst.Equals(snd);
 
         #endregion
-    }
-
-    /// <summary>Generic operator class with more info about suboperator</summary>
-    internal abstract class Operator<SubOpT>
-        : BaseOperator where SubOpT : Operator<SubOpT>
-    {
-        protected override Type ConcreteType => typeof(SubOpT);
-    }
-
-    internal abstract class CommutativeAssociativeOperator<SubOpT>
-        : Operator<SubOpT> where SubOpT : CommutativeAssociativeOperator<SubOpT>
-    {
-    }
-
-    internal abstract class BinaryOperator<SubOpT>
-        : Operator<SubOpT> where SubOpT : BinaryOperator<SubOpT>
-    {
-    }
-
-    internal abstract class UnaryOperator<SubOpT>
-        : Operator<SubOpT> where SubOpT : UnaryOperator<SubOpT>
-    {
     }
 }
