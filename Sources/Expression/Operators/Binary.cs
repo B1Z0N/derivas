@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Derivas.Exception;
-using Derivas.Expression;
 
 namespace Derivas.Expression
 {
@@ -36,7 +31,7 @@ namespace Derivas.Expression
 
     internal static partial class OperatorCollection
     {
-        public static Expr Division(Expr fst, Expr snd) 
+        public static Expr Division(Expr fst, Expr snd)
             => new BinaryOperator(fst, snd, "/", 1, (fst, snd) => fst / snd);
 
         public static Expr Subtraction(Expr fst, Expr snd)

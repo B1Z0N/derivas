@@ -1,12 +1,10 @@
-﻿using System;
+﻿using Derivas.Expression;
+using System;
 using System.Collections.Generic;
-using System.Text;
-
-using Derivas.Expression;
 
 namespace Derivas.Utils
 {
-    public class NameVal : Dictionary<string, double>, IDictionary<string, double> 
+    public class NameVal : Dictionary<string, double>, IDictionary<string, double>
     {
     }
 

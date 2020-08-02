@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace Derivas.Exception
+﻿namespace Derivas.Exception
 {
     /// <summary>
     /// Base exception class for the project

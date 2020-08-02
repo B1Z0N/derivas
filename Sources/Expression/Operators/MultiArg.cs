@@ -1,8 +1,7 @@
-﻿using System;
+﻿using Derivas.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-
-using Derivas.Utils;
 
 namespace Derivas.Expression
 {
@@ -18,7 +17,7 @@ namespace Derivas.Expression
         protected abstract int Priority { get; }
         protected abstract Func<double[], double> OpFunc { get; }
 
-        #endregion
+        #endregion abstract members specific to any operator
 
         #region base class functionality
 
@@ -28,7 +27,7 @@ namespace Derivas.Expression
         public MultiArgOperator(params Expr[] lst)
             => Operands_ = new List<Expr>(lst);
 
-        #endregion
+        #endregion base class functionality
 
         #region Expr interface implementation
 
@@ -53,7 +52,7 @@ namespace Derivas.Expression
             return String.Join($" {Sign} ", withPars);
         }
 
-        #endregion
+        #endregion Expr interface implementation
 
         #region equals related stuff
 
@@ -78,9 +77,6 @@ namespace Derivas.Expression
             return hash.ToHashCode();
         }
 
-        public static bool operator ==(MultiArgOperator fst, MultiArgOperator snd) => fst.Equals(snd);
-        public static bool operator !=(MultiArgOperator fst, MultiArgOperator snd) => !fst.Equals(snd);
-
-        #endregion
+        #endregion equals related stuff
     }
 }

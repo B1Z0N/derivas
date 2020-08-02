@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-
-using Derivas.Utils;
+﻿using Derivas.Utils;
+using System;
 
 /// <summary>
 /// Main userspace interface
@@ -23,7 +21,9 @@ namespace Derivas.Expression
     internal abstract class Expr : IDvExpr, IEquatable<Expr>
     {
         public abstract double Calculate(NameVal concrete);
+
         public abstract bool Equals(Expr other);
+
         public abstract string Represent();
     }
 }

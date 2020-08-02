@@ -1,17 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-using Derivas.Exception;
-using Derivas.Expression;
-using Derivas.Utils;
+﻿using Derivas.Utils;
+using System;
 
 namespace Derivas.Expression
 {
     internal class Logarithm : Expr
     {
         public Expr Of { get; }
-        public  Expr Base { get;  }
+        public Expr Base { get; }
 
         public Logarithm(Expr of, Expr bas = null)
             => (Of, Base) = (of, bas ?? DvConsts.E);
@@ -25,7 +20,7 @@ namespace Derivas.Expression
         public override double Calculate(NameVal concrete)
             => Math.Log(Of.Calculate(concrete), Base.Calculate(concrete));
 
-        #endregion
+        #endregion abstract class implementation
 
         #region equals related stuff
 
@@ -39,10 +34,7 @@ namespace Derivas.Expression
 
         public override int GetHashCode() => HashCode.Combine(Of, Base);
 
-        public static bool operator ==(Logarithm fst, Logarithm snd) => fst.Equals(snd);
-        public static bool operator !=(Logarithm fst, Logarithm snd) => !fst.Equals(snd);
-
-        #endregion
+        #endregion equals related stuff
     }
 
     internal static partial class OperatorCollection
