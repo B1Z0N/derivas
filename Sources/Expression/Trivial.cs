@@ -1,5 +1,4 @@
 ﻿using Derivas.Exception;
-using Derivas.Utils;
 
 namespace Derivas.Exception
 {
@@ -14,41 +13,51 @@ namespace Derivas.Exception
 
 namespace Derivas.Expression
 {
-    internal class Constant : Expr
+    internal class Constant : IDvExpr
     {
         public double Val { get; }
 
         public Constant(double val) => Val = val;
 
-        public override double Calculate(NameVal concrete) => Val;
+        public double Calculate(DvNameVal concrete) => Val;
 
-        public override string Represent() => $"{Val}";
+        public string Represent() => $"{Val}";
 
-        public override bool Equals(object obj) => Equals(obj as Expr);
+        public override bool Equals(object obj) => Equals(obj as IDvExpr);
 
-        public override bool Equals(Expr other)
+        public bool Equals(IDvExpr other)
             => (other as Constant)?.Val == Val;
 
         public override int GetHashCode() => Val.GetHashCode();
+
+        public IDvExpr Clone() => new Constant(Val);
     }
 
-    internal class Symbol : Expr
+    internal class Symbol : IDvExpr
     {
         public string Name { get; }
 
         public Symbol(string name) => Name = name;
 
-        public override double Calculate(NameVal concrete)
+        public double Calculate(DvNameVal concrete)
             => concrete.ContainsKey(Name) ? concrete[Name]
             : throw new DvSymbolMismatchException(Name);
 
-        public override string Represent() => Name;
+        public string Represent() => Name;
 
-        public override bool Equals(object obj) => Equals(obj as Expr);
+        public override bool Equals(object obj) => Equals(obj as IDvExpr);
 
-        public override bool Equals(Expr other)
+        public bool Equals(IDvExpr other)
             => (other as Symbol)?.Name == Name;
 
         public override int GetHashCode() => Name.GetHashCode();
+
+        public IDvExpr Clone() => new Symbol(Name);
+    }
+
+    public static partial class DvOps
+    {
+        public static IDvExpr Const(int val) => new Constant(val);
+        public static IDvExpr Sym(string name) => new Symbol(name);
     }
 }

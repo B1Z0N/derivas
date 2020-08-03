@@ -1,78 +1,80 @@
-﻿using Derivas.Utils;
-using System;
+﻿using System;
 
 namespace Derivas.Expression
 {
-    internal class UnaryOperator : Expr
+    internal class UnaryOperator : IDvExpr
     {
-        public Expr Of { get; }
+        public IDvExpr Of { get; }
         public string Name { get; }
 
         protected Func<double, double> OpFunc { get; }
 
-        public UnaryOperator(Expr of, string name, Func<double, double> op)
+        public UnaryOperator(IDvExpr of, string name, Func<double, double> op)
             => (Of, Name, OpFunc) = (of, name, op);
 
-        #region abstract class implementation
+        #region interface implementation
 
-        public override string Represent() => $"{Name}({Of.Represent()})";
+        public  string Represent() => $"{Name}({Of.Represent()})";
 
-        public override double Calculate(NameVal concrete)
+        public  double Calculate(DvNameVal concrete)
             => OpFunc(Of.Calculate(concrete));
 
-        #endregion abstract class implementation
+        public IDvExpr Clone() => new UnaryOperator(Of, Name, OpFunc);
+
+        #endregion interface implementation
 
         #region equals related stuff
 
-        public override bool Equals(Expr other)
+        public  bool Equals(IDvExpr other)
         {
             var op = other as UnaryOperator;
             return op != null && Of == op.Of && Name == op.Name;
         }
 
-        public override bool Equals(object obj) => Equals(obj as Expr);
+        public override bool Equals(object obj) => Equals(obj as IDvExpr);
 
         public override int GetHashCode() => HashCode.Combine(Of, Name);
+
 
         #endregion equals related stuff
     }
 
-    internal static partial class OperatorCollection
+    public static partial class DvOps
     {
-        public static Expr Cosine(Expr of)
+        public static IDvExpr Cos(IDvExpr of)
             => new UnaryOperator(of, "cos", Math.Cos);
 
-        public static Expr Sine(Expr of)
+        public static IDvExpr Sin(IDvExpr of)
             => new UnaryOperator(of, "sin", Math.Sin);
 
-        public static Expr Tangent(Expr of)
+        public static IDvExpr Tan(IDvExpr of)
             => new UnaryOperator(of, "tan", Math.Tan);
 
-        public static Expr Cotangent(Expr of)
+        public static IDvExpr Cotan(IDvExpr of)
             => new UnaryOperator(of, "cotan", of => 1 / Math.Tan(of));
 
-        public static Expr Arccosine(Expr of)
+        public static IDvExpr Acos(IDvExpr of)
             => new UnaryOperator(of, "arccos", Math.Acos);
 
-        public static Expr Arcsine(Expr of)
+        public static IDvExpr Asin(IDvExpr of)
             => new UnaryOperator(of, "arcsin", Math.Asin);
 
-        public static Expr Arctangent(Expr of)
+        public static IDvExpr Atan(IDvExpr of)
             => new UnaryOperator(of, "arctan", Math.Atan);
 
-        public static Expr Arccotangent(Expr of)
+        public static IDvExpr Acotan(IDvExpr of)
             => new UnaryOperator(of, "arccotan", of => Math.PI / 2 - Math.Atan(of));
 
-        public static Expr HyperbolicCosine(Expr of)
+        public static IDvExpr Cosh(IDvExpr of)
             => new UnaryOperator(of, "cosh", Math.Cosh);
 
-        public static Expr HyperbolicSine(Expr of)
+        public static IDvExpr Sinh(IDvExpr of)
             => new UnaryOperator(of, "sinh", Math.Sinh);
 
-        public static Expr HyperbolicTangent(Expr of)
+        public static IDvExpr Tanh(IDvExpr of)
             => new UnaryOperator(of, "tanh", Math.Tanh);
 
-        public static Expr HyperbolicCotangent(Expr of)
+        public static IDvExpr Cotanh(IDvExpr of)
             => new UnaryOperator(of, "cotanh", of => 1 / Math.Tanh(of));
     }
 }

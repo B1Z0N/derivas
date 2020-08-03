@@ -1,5 +1,4 @@
-﻿using Derivas.Utils;
-using System;
+﻿using System;
 
 /// <summary>
 /// Main userspace interface
@@ -8,22 +7,17 @@ using System;
 namespace Derivas.Expression
 {
     /// <summary>Userspace mathematical expression interface</summary>
-    public interface IDvExpr
+    public interface IDvExpr : IEquatable<IDvExpr>
     {
         /// <summary>Substitute symbols to it's values</summary>
         /// <param name="nameVal">Dictionary of symbolName:value</param>
-        double Calculate(NameVal concrete);
+        double Calculate(DvNameVal concrete);
 
         /// <summary>User readable representation of this expression</summary>
         string Represent();
+
+        /// <summary>Get the copy of yourself</summary>
+        IDvExpr Clone();
     }
 
-    internal abstract class Expr : IDvExpr, IEquatable<Expr>
-    {
-        public abstract double Calculate(NameVal concrete);
-
-        public abstract bool Equals(Expr other);
-
-        public abstract string Represent();
-    }
 }

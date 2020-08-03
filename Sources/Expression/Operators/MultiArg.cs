@@ -1,5 +1,4 @@
-﻿using Derivas.Utils;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,7 +8,7 @@ namespace Derivas.Expression
     /// Abstract class to define functionality and interface(in broader sense)
     /// to all nongeneric MultiArgOperator functionality
     /// </summary>
-    internal abstract class MultiArgOperator : Expr
+    internal abstract class MultiArgOperator : IDvExpr
     {
         #region abstract members specific to any operator
 
@@ -21,24 +20,24 @@ namespace Derivas.Expression
 
         #region base class functionality
 
-        public IEnumerable<Expr> Operands => Operands_;
-        protected List<Expr> Operands_;
+        public IEnumerable<IDvExpr> Operands => Operands_;
+        protected List<IDvExpr> Operands_;
 
-        public MultiArgOperator(params Expr[] lst)
-            => Operands_ = new List<Expr>(lst);
+        public MultiArgOperator(params IDvExpr[] lst)
+            => Operands_ = new List<IDvExpr>(lst);
 
         #endregion base class functionality
 
-        #region Expr interface implementation
+        #region IDvExpr interface implementation
 
-        public override double Calculate(NameVal concrete)
+        public  double Calculate(DvNameVal concrete)
             => OpFunc(
                 Operands_.Select(
                     el => el.Calculate(concrete)
                 ).ToArray()
             );
 
-        public override string Represent()
+        public  string Represent()
         {
             var withPars = new List<string>();
             foreach (var el in Operands_)
@@ -51,19 +50,21 @@ namespace Derivas.Expression
 
             return String.Join($" {Sign} ", withPars);
         }
+        
+        public abstract IDvExpr Clone();  
 
-        #endregion Expr interface implementation
+        #endregion IDvExpr interface implementation
 
         #region equals related stuff
 
-        public override bool Equals(Expr other)
+        public  bool Equals(IDvExpr other)
         {
             var op = other as MultiArgOperator;
             return op != null && GetType() == other.GetType() &&
                 Operands_.SequenceEqual(op.Operands_);
         }
 
-        public override bool Equals(object obj) => Equals(obj as Expr);
+        public override bool Equals(object obj) => Equals(obj as IDvExpr);
 
         public override int GetHashCode()
         {
