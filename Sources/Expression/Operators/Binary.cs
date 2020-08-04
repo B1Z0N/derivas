@@ -21,18 +21,28 @@ namespace Derivas.Expression
         public BinaryOperator(
              IDvExpr fst, IDvExpr snd, string sign, int prio,
             Func<double, double, double> op)
+            :base(fst, snd)
         {
-            (First, Second, Sign, Priority) = (fst, snd, sign, prio);
+            (Sign, Priority) = (sign, prio);
             OpFunc = (double[] args) => op(args[0], args[1]);
             BinFunc = op;
         }
 
-        protected override Func<double[], double> OpFunc { get; }
-        protected override int Priority { get; }
-        protected override string Sign { get; }
+        public override Func<double[], double> OpFunc { get; }
+        public override int Priority { get; }
+        public override string Sign { get; }
 
-        public override IDvExpr Clone() 
-            => new BinaryOperator(First, Second, Sign, Priority, BinFunc);
+        public override MultiArgOperator CreateInstance(params IDvExpr[] operands)
+        {
+            if (operands.Length < 2)
+            {
+                return new BinaryOperator(First, Second, Sign, Priority, BinFunc);
+            }
+            else
+            {
+                return new BinaryOperator(operands[0], operands[1], Sign, Priority, BinFunc);
+            }
+        }
     }
 
     public static partial class DvOps

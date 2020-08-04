@@ -2,40 +2,36 @@
 
 namespace Derivas.Expression
 {
-    internal class Logarithm : IDvExpr
+    internal class Logarithm : BinaryOperator
     {
-        public IDvExpr Of { get; }
-        public IDvExpr Base { get; }
+        public IDvExpr Of { get => First; set => First = value; } 
+        public IDvExpr Base { get => Second; set => Second = value; }
 
         public Logarithm(IDvExpr of, IDvExpr bas = null)
-            => (Of, Base) = (of, bas ?? DvConsts.E);
+            : base(of, bas ?? DvConsts.E, "log", int.MaxValue, Math.Log)
+        { 
+        }
+        
+        #region abstract class implementation
 
-        #region interface implementation
-
-        public  string Represent()
+        public override string Represent()
             => Base.Equals(DvConsts.E) ? $"log({Of.Represent()})" :
             $"log({Of.Represent()}, base={Base.Represent()})";
 
-        public  double Calculate(DvNameVal concrete)
-            => Math.Log(Of.Calculate(concrete), Base.Calculate(concrete));
-
-        public IDvExpr Clone() => new Logarithm(Of, Base);
-        
-        #endregion interface implementation
-
-        #region equals related stuff
-
-        public  bool Equals(IDvExpr other)
+        public override MultiArgOperator CreateInstance(params IDvExpr[] operands)
         {
-            var op = other as Logarithm;
-            return op != null && Of == op.Of && Base == op.Base;
+            if (operands.Length < 2)
+            {
+                return new Logarithm(Of, Base);
+            }
+            else
+            {
+                return new Logarithm(operands[0], operands[1]);
+            }
         }
+       
+        #endregion abstract class implementation
 
-        public override bool Equals(object obj) => Equals(obj as IDvExpr);
-
-        public override int GetHashCode() => HashCode.Combine(Of, Base);
-
-        #endregion equals related stuff
     }
 
     public static partial class DvOps

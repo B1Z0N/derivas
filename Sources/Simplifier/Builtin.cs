@@ -13,11 +13,34 @@ namespace Derivas.Simplifier
         public static ConstSimplifier Singleton { get; }
 
         public IDvExpr Simplify(IDvExpr expr)
-        {
-            return Get(expr);
-        }
+            => expr switch
+            {
+                MultiArgOperator op => Get(op),
+                _ => Get(expr)
+            };
 
-        private IDvExpr Get(IDvExpr expr) => expr.Clone();
+        private IDvExpr Get(IDvExpr expr) => expr;
+        private IDvExpr Get(MultiArgOperator expr)
+        {
+            var newOps = new List<IDvExpr>();
+            var constsOnly = new List<double>();
+            foreach (var op in expr.Operands)
+            {
+                if (op is Constant con)
+                {
+                    constsOnly.Add(con.Val);
+                }
+                else
+                {
+                    newOps.Add(op);
+                }
+            }
+
+            newOps.Add(
+                new Constant(expr.OpFunc(constsOnly.ToArray()))
+            );
+            return expr.CreateInstance(newOps.ToArray());
+        }
     }
 
     internal sealed class PolynomSimplifier : IDvSimplifier
@@ -26,10 +49,16 @@ namespace Derivas.Simplifier
         public static PolynomSimplifier Singleton { get; }
 
         public IDvExpr Simplify(IDvExpr expr)
-        {
-            return Get(expr);
-        }
+            => expr switch
+            {
+                MultiArgOperator op => Get(op),
+                _ => Get(expr)
+            };
 
-        private IDvExpr Get(IDvExpr expr) => expr.Clone();
+        private IDvExpr Get(IDvExpr expr) => expr;
+        private IDvExpr Get(MultiArgOperator expr)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

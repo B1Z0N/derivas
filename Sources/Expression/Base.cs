@@ -15,9 +15,6 @@ namespace Derivas.Expression
 
         /// <summary>User readable representation of this expression</summary>
         string Represent();
-
-        /// <summary>Get the copy of yourself</summary>
-        IDvExpr Clone();
     }
 
 }

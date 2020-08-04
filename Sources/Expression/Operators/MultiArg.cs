@@ -12,32 +12,33 @@ namespace Derivas.Expression
     {
         #region abstract members specific to any operator
 
-        protected abstract string Sign { get; }
-        protected abstract int Priority { get; }
-        protected abstract Func<double[], double> OpFunc { get; }
+        public abstract string Sign { get; }
+        public abstract int Priority { get; }
+        public abstract Func<double[], double> OpFunc { get; }
+        public abstract MultiArgOperator CreateInstance(params IDvExpr[] operands);  
 
         #endregion abstract members specific to any operator
 
         #region base class functionality
 
-        public IEnumerable<IDvExpr> Operands => Operands_;
-        protected List<IDvExpr> Operands_;
+        public IEnumerable<IDvExpr> Operands { get => Operands_; }
+        
+        protected internal List<IDvExpr> Operands_;
 
-        public MultiArgOperator(params IDvExpr[] lst)
-            => Operands_ = new List<IDvExpr>(lst);
+        public MultiArgOperator(params IDvExpr[] lst) => Operands_ = new List<IDvExpr>(lst);
 
         #endregion base class functionality
 
         #region IDvExpr interface implementation
 
-        public  double Calculate(DvNameVal concrete)
+        public virtual double Calculate(DvNameVal concrete)
             => OpFunc(
                 Operands_.Select(
                     el => el.Calculate(concrete)
                 ).ToArray()
             );
 
-        public  string Represent()
+        public virtual string Represent()
         {
             var withPars = new List<string>();
             foreach (var el in Operands_)
@@ -51,16 +52,14 @@ namespace Derivas.Expression
             return String.Join($" {Sign} ", withPars);
         }
         
-        public abstract IDvExpr Clone();  
-
         #endregion IDvExpr interface implementation
 
         #region equals related stuff
 
-        public  bool Equals(IDvExpr other)
+        public virtual bool Equals(IDvExpr other)
         {
             var op = other as MultiArgOperator;
-            return op != null && GetType() == other.GetType() &&
+            return op != null && GetType() == other.GetType() && Sign == op.Sign &&
                 Operands_.SequenceEqual(op.Operands_);
         }
 
@@ -74,7 +73,9 @@ namespace Derivas.Expression
                 hash.Add(item);
             }
 
-            hash.Add(this.GetType());
+            hash.Add(GetType());
+            hash.Add(Sign);
+
             return hash.ToHashCode();
         }
 

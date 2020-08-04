@@ -12,12 +12,13 @@ namespace Derivas.Expression
             Func<double[], double> op, params IDvExpr[] operands)
             : base(operands) => (Sign, Priority, OpFunc) = (sign, prio, op);
 
-        protected override Func<double[], double> OpFunc { get; }
-        protected override int Priority { get; }
-        protected override string Sign { get; }
+        public override Func<double[], double> OpFunc { get; }
+        public override int Priority { get; }
+        public override string Sign { get; }
 
-        public override IDvExpr Clone() 
-            => new CommutativeAssociativeOperator(Sign, Priority, OpFunc, Operands_.ToArray());
+        public override MultiArgOperator CreateInstance(params IDvExpr[] operands) 
+            => new CommutativeAssociativeOperator(Sign, Priority, OpFunc, 
+                operands.Length != 0 ? operands : Operands_.ToArray());
     }
 
     public static partial class DvOps

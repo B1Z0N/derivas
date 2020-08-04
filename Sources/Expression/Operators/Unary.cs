@@ -2,41 +2,27 @@
 
 namespace Derivas.Expression
 {
-    internal class UnaryOperator : IDvExpr
+    internal class UnaryOperator : MultiArgOperator
     {
-        public IDvExpr Of { get; }
-        public string Name { get; }
-
-        protected Func<double, double> OpFunc { get; }
+        public IDvExpr Of { get => Operands_[0]; set => Operands_[0] = value; }
+        protected Func<double, double> UnFunc { get; }
 
         public UnaryOperator(IDvExpr of, string name, Func<double, double> op)
-            => (Of, Name, OpFunc) = (of, name, op);
+            : base(of) => (Sign, UnFunc) = (name, op);
 
-        #region interface implementation
+        #region abstract class implementation
 
-        public  string Represent() => $"{Name}({Of.Represent()})";
+        public override string Represent() => $"{Sign}({Of.Represent()})";
 
-        public  double Calculate(DvNameVal concrete)
-            => OpFunc(Of.Calculate(concrete));
+        public override MultiArgOperator CreateInstance(params IDvExpr[] operands)
+            => new UnaryOperator(operands.Length != 0 ? operands[0] : Of, Sign, UnFunc); 
 
-        public IDvExpr Clone() => new UnaryOperator(Of, Name, OpFunc);
+        public override string Sign { get; }
+        public override int Priority { get; } = int.MaxValue;
 
-        #endregion interface implementation
+        public override Func<double[], double> OpFunc => (args) => UnFunc(args[0]); 
 
-        #region equals related stuff
-
-        public  bool Equals(IDvExpr other)
-        {
-            var op = other as UnaryOperator;
-            return op != null && Of == op.Of && Name == op.Name;
-        }
-
-        public override bool Equals(object obj) => Equals(obj as IDvExpr);
-
-        public override int GetHashCode() => HashCode.Combine(Of, Name);
-
-
-        #endregion equals related stuff
+        #endregion abstract class implementation
     }
 
     public static partial class DvOps
