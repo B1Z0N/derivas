@@ -1,6 +1,16 @@
-﻿using System;
+﻿using Derivas.Exception;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+
+namespace Derivas.Exception
+{
+    public class DvNotEnoughArguments : DvBaseException
+    {
+        public DvNotEnoughArguments(int nOrMore)
+            : base($"Not enough arguments passed, accepts {nOrMore} or more") { }
+    }
+}
 
 namespace Derivas.Expression
 {
@@ -73,7 +83,7 @@ namespace Derivas.Expression
                 replaceCount = Math.Min(replaceCount, counter[operand]);
             }
 
-            IEnumerable<IDvExpr> 
+            IEnumerable<IDvExpr>
                 replaced = Enumerable.Repeat(with, replaceCount).SelectMany(x => x),
                 untouched = new List<IDvExpr>(Operands.Except(replaceOperands));
             foreach (var operand in replaceOperands)
@@ -92,16 +102,33 @@ namespace Derivas.Expression
 
     public static partial class DvOps
     {
+        #region helpers
+
         private static Func<double[], double> Addition =
             args => args.Aggregate(0d, (fst, snd) => fst + snd);
-
-        public static IDvExpr Add(params IDvExpr[] args)
-            => new CommutativeAssociativeOperator("+", 0, Addition, args);
 
         private static Func<double[], double> Multiplication =
             args => args.Aggregate(1d, (fst, snd) => fst * snd);
 
+        private static IDvExpr CheckForLessThanTwo(Func<IDvExpr[], IDvExpr> createF, params IDvExpr[] args)
+            => args.Count() < 2 ? throw new DvNotEnoughArguments(2) : createF(args);
+
+        #endregion helpers
+
+        #region userspace methods
+
+        public static IDvExpr Add(params IDvExpr[] args)
+            => CheckForLessThanTwo(
+                ops => new CommutativeAssociativeOperator("+", 0, Addition, ops),
+                args
+            );
+
         public static IDvExpr Mul(params IDvExpr[] args)
-            => new CommutativeAssociativeOperator("*", 1, Multiplication, args);
+            => CheckForLessThanTwo(
+                ops => new CommutativeAssociativeOperator("*", 1, Multiplication, ops),
+                args
+            );
+
+        #endregion userspace methods
     }
 }
