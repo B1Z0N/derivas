@@ -31,41 +31,10 @@ namespace Derivas.Expression
         string Represent();
     }
 
-
     public static partial class DvOps
     {
-        /// <summary>
-        /// Check if expr is convertable to IDvExpr and perform conversions.
-        /// It must be either numeric(int, double, ...) - for Const, string - for Sym or IDvExpr itself
-        /// </summary>
-        /// <returns>Converted IDvExpr or an exception if such conversion can't be done</returns>
-        private static IDvExpr CheckExpr(object expr) =>
-            IsNumber(expr) ?
-            Const(Convert.ToDouble(expr)) :
-            expr switch
-            {
-                string name => Sym(name),
-                IDvExpr expression => expression,
-                _ => throw new DvExpressionMismatch(expr.GetType())
-            };
-
-        private static bool IsNumber(object value)
-        {
-            return value is double
-                    || value is int
-                    || value is float
-                    || value is decimal
-                    || value is long
-                    || value is sbyte
-                    || value is byte
-                    || value is short
-                    || value is ushort
-                    || value is uint
-                    || value is ulong
-            ;
-        }
-
-        private static IDvExpr[] CheckExpr(object[] args) => args.Select(CheckExpr).ToArray();
+        private static IDvExpr CheckExpr(object arg) => Utils.CheckExpr(arg);
+        private static IDvExpr[] CheckExpr(object[] args) => Utils.CheckExpr(args);
     }
 
 }

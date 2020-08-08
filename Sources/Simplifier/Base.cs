@@ -4,10 +4,12 @@ using System.Linq;
 
 using Derivas.Exception;
 using Derivas.Expression;
+using Derivas.Simplifier;
+
 
 namespace Derivas.Simplifier
 {
-    public interface IDvSimplifier
+    internal interface ISimplifier
     {
         IDvExpr Simplify(IDvExpr expr);
     }
@@ -15,10 +17,10 @@ namespace Derivas.Simplifier
     public sealed partial class DvSimplifier
     {
         private IDvExpr Expr { get; set; }
-        private Queue<IDvSimplifier> InvocationQ { get; } = new Queue<IDvSimplifier>();
+        private Queue<ISimplifier> InvocationQ { get; } = new Queue<ISimplifier>();
         private DvSimplifier(IDvExpr expr) { Expr = expr; }
 
-        public static DvSimplifier Create(IDvExpr expr)
+        internal static DvSimplifier Create(IDvExpr expr)
             => new DvSimplifier(expr);
 
         public IDvExpr Simplify()
@@ -32,7 +34,7 @@ namespace Derivas.Simplifier
         }
     }
 
-    internal abstract class BaseSimplifier : IDvSimplifier
+    internal abstract class BaseSimplifier : ISimplifier
     {
         public IDvExpr Simplify(IDvExpr expr)
             => expr switch
@@ -57,5 +59,13 @@ namespace Derivas.Simplifier
         protected virtual IDvExpr Get(BinaryOperator expr) => Get(expr as OrderedOperator);
 
         protected virtual IDvExpr Get(Logarithm log) => Get(log as BinaryOperator);
+    }
+}
+
+namespace Derivas.Expression
+{
+    public static partial class DvOps
+    {
+        public static DvSimplifier Simpl(IDvExpr expr) => DvSimplifier.Create(expr);
     }
 }
