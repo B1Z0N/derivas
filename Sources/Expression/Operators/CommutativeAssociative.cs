@@ -138,16 +138,16 @@ namespace Derivas.Expression
 
         #region userspace methods
 
-        public static IDvExpr Add(params IDvExpr[] args)
+        public static IDvExpr Add(params object[] args)
             => CheckForLessThanTwo(
                 ops => new CommutativeAssociativeOperator("+", 0, Addition, ops),
-                args
+                CheckExpr(args)
             );
 
-        public static IDvExpr Mul(params IDvExpr[] args)
+        public static IDvExpr Mul(params object[] args)
             => CheckForLessThanTwo(
                 ops => new CommutativeAssociativeOperator("*", 1, Multiplication, ops),
-                args
+                CheckExpr(args)
             );
 
         #endregion userspace methods

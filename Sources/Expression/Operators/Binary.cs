@@ -47,14 +47,14 @@ namespace Derivas.Expression
 
     public static partial class DvOps
     {
-        public static IDvExpr Div(IDvExpr fst, IDvExpr snd)
-            => new BinaryOperator(fst, snd, "/", 1, (fst, snd) => fst / snd);
+        public static IDvExpr Div(object fst, object snd)
+            => new BinaryOperator(CheckExpr(fst), CheckExpr(snd), "/", 1, (fst, snd) => fst / snd);
 
-        public static IDvExpr Sub(IDvExpr fst, IDvExpr snd)
-            => new BinaryOperator(fst, snd, "-", 0, (fst, snd) => fst - snd);
+        public static IDvExpr Sub(object fst, object snd)
+            => new BinaryOperator(CheckExpr(fst), CheckExpr(snd), "-", 0, (fst, snd) => fst - snd);
 
-        public static IDvExpr Pow(IDvExpr bas, IDvExpr pow) => new BinaryOperator(
-            bas, pow, "^", 2, (bas, pow) => Math.Pow(bas, pow)
+        public static IDvExpr Pow(object bas, object pow) => new BinaryOperator(
+            CheckExpr(bas), CheckExpr(pow), "^", 2, (bas, pow) => Math.Pow(bas, pow)
         );
     }
 }

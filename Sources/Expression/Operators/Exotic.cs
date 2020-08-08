@@ -36,7 +36,7 @@ namespace Derivas.Expression
 
     public static partial class DvOps
     {
-        public static IDvExpr Log(IDvExpr of, IDvExpr bas = null)
-            => new Logarithm(of, bas);
+        public static IDvExpr Log(object of, object bas = null)
+            => new Logarithm(CheckExpr(of), CheckExpr(bas));
     }
 }
