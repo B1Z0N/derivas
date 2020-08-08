@@ -2,7 +2,7 @@
 
 namespace Derivas.Expression
 {
-    internal class UnaryOperator : MultiArgOperator
+    internal class UnaryOperator : OrderedOperator
     {
         public IDvExpr Of { get => Operands_[0]; set => Operands_[0] = value; }
         protected Func<double, double> UnFunc { get; }
@@ -14,7 +14,7 @@ namespace Derivas.Expression
 
         public override string Represent() => $"{Sign}({Of.Represent()})";
 
-        public override MultiArgOperator CreateInstance(params IDvExpr[] operands)
+        public override Operator CreateInstance(params IDvExpr[] operands)
             => new UnaryOperator(operands.Length != 0 ? operands[0] : Of, Sign, UnFunc); 
 
         public override string Sign { get; }

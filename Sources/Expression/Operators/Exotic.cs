@@ -18,7 +18,7 @@ namespace Derivas.Expression
             => Base.Equals(DvConsts.E) ? $"log({Of.Represent()})" :
             $"log({Of.Represent()}, base={Base.Represent()})";
 
-        public override MultiArgOperator CreateInstance(params IDvExpr[] operands)
+        public override Operator CreateInstance(params IDvExpr[] operands)
         {
             if (operands.Length < 2)
             {

@@ -2,7 +2,7 @@
 
 namespace Derivas.Expression
 {
-    internal class BinaryOperator : MultiArgOperator
+    internal class BinaryOperator : OrderedOperator
     {
         public IDvExpr First
         {
@@ -32,7 +32,7 @@ namespace Derivas.Expression
         public override int Priority { get; }
         public override string Sign { get; }
 
-        public override MultiArgOperator CreateInstance(params IDvExpr[] operands)
+        public override Operator CreateInstance(params IDvExpr[] operands)
         {
             if (operands.Length < 2)
             {

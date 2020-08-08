@@ -57,7 +57,7 @@ namespace Derivas.Expression
 
     public static partial class DvOps
     {
-        public static IDvExpr Const(int val) => new Constant(val);
+        public static IDvExpr Const(double val) => new Constant(val);
         public static IDvExpr Sym(string name) => new Symbol(name);
     }
 }
