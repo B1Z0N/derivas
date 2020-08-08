@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
 using Derivas.Exception;
 using Derivas.Expression;
@@ -30,5 +30,32 @@ namespace Derivas.Simplifier
 
             return Expr;
         }
+    }
+
+    internal abstract class BaseSimplifier : IDvSimplifier
+    {
+        public IDvExpr Simplify(IDvExpr expr)
+            => expr switch
+            {
+                Logarithm log => Get(log),
+                BinaryOperator op => Get(op),
+                CommutativeAssociativeOperator op => Get(op),
+                OrderedOperator op => Get(op),
+                Operator op => Get(op),
+                _ => Get(expr)
+            };
+
+        protected virtual IDvExpr Get(IDvExpr expr) => expr;
+
+        protected virtual IDvExpr Get(Operator expr)
+            => expr.CreateInstance(expr.Operands.Select(Simplify).ToArray());
+
+        protected virtual IDvExpr Get(OrderedOperator expr) => Get(expr as Operator);
+
+        protected virtual IDvExpr Get(CommutativeAssociativeOperator expr) => Get(expr as Operator);
+
+        protected virtual IDvExpr Get(BinaryOperator expr) => Get(expr as OrderedOperator);
+
+        protected virtual IDvExpr Get(Logarithm log) => Get(log as BinaryOperator);
     }
 }

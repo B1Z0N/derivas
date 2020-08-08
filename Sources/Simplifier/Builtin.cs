@@ -4,33 +4,6 @@ using System.Linq;
 
 namespace Derivas.Simplifier
 {
-    internal abstract class BaseSimplifier : IDvSimplifier
-    {
-        public IDvExpr Simplify(IDvExpr expr)
-            => expr switch
-            {
-                Logarithm log => Get(log),
-                BinaryOperator op => Get(op),
-                CommutativeAssociativeOperator op => Get(op),
-                OrderedOperator op => Get(op),
-                Operator op => Get(op),
-                _ => Get(expr)
-            };
-
-        protected virtual IDvExpr Get(IDvExpr expr) => expr;
-
-        protected virtual IDvExpr Get(Operator expr)
-            => expr.CreateInstance(expr.Operands.Select(Simplify).ToArray());
-
-        protected virtual IDvExpr Get(OrderedOperator expr) => Get(expr as Operator);
-
-        protected virtual IDvExpr Get(CommutativeAssociativeOperator expr) => Get(expr as Operator);
-
-        protected virtual IDvExpr Get(BinaryOperator expr) => Get(expr as OrderedOperator);
-
-        protected virtual IDvExpr Get(Logarithm log) => Get(log as BinaryOperator);
-    }
-
     internal sealed class ConstSimplifier : BaseSimplifier
     {
         private ConstSimplifier()
@@ -76,9 +49,10 @@ namespace Derivas.Simplifier
             return newOps.Count == 1 ? newOps[0] : expr.CreateInstance(newOps.ToArray());
         }
 
+
         protected override IDvExpr Get(Logarithm log)
         {
-            var res = Get(log as OrderedOperator);
+            var res = base.Get(log);
             if (res is Constant)
             {
                 return res;
@@ -104,6 +78,8 @@ namespace Derivas.Simplifier
 
         protected override IDvExpr Get(CommutativeAssociativeOperator expr)
         {
+            expr = base.Get(expr) as CommutativeAssociativeOperator;
+
             var coeffs = new Dictionary<IDvExpr, double>();
             foreach (var operand in expr.Operands)
             {
