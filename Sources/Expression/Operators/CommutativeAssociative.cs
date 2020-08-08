@@ -37,7 +37,28 @@ namespace Derivas.Expression
             Func<double[], double> op, params IDvExpr[] operands)
         {
             (Sign, Priority, OpFunc) = (sign, prio, op);
-            Operands_ = new List<IDvExpr>(operands);
+            Operands_ = new List<IDvExpr>(FlattenSubOperands(operands));
+        }
+
+        public bool IsSameType(IDvExpr to)
+            => to is CommutativeAssociativeOperator op && op.Sign == Sign;
+
+        private IEnumerable<IDvExpr> FlattenSubOperands(IEnumerable<IDvExpr> operands)
+        {
+            IEnumerable<IDvExpr> res = new List<IDvExpr>();
+            foreach (var operand in operands)
+            {
+                if (operand is CommutativeAssociativeOperator op && op.Sign == Sign)
+                {
+                    res = res.Concat(FlattenSubOperands(op.Operands));
+                }
+                else
+                {
+                    res = res.Append(operand);
+                }
+            }
+
+            return res;
         }
 
         public CommutativeAssociativeOperator ReplaceSubOperands(
@@ -62,7 +83,7 @@ namespace Derivas.Expression
                     }
                     else
                     {
-                        res.Append(operand);
+                        res = res.Append(operand);
                     }
                 }
 
