@@ -1,4 +1,5 @@
 ﻿using Derivas.Exception;
+using System;
 
 namespace Derivas.Exception
 {

@@ -1,10 +1,6 @@
-﻿using System;
+﻿using Derivas.Expression;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
-
-using Derivas.Exception;
-using Derivas.Expression;
 
 namespace Derivas.Simplifier
 {
@@ -14,6 +10,7 @@ namespace Derivas.Simplifier
             => expr switch
             {
                 Logarithm log => Get(log),
+                BinaryOperator op => Get(op),
                 CommutativeAssociativeOperator op => Get(op),
                 OrderedOperator op => Get(op),
                 Operator op => Get(op),
@@ -21,16 +18,25 @@ namespace Derivas.Simplifier
             };
 
         protected virtual IDvExpr Get(IDvExpr expr) => expr;
+
         protected virtual IDvExpr Get(Operator expr)
             => expr.CreateInstance(expr.Operands.Select(Simplify).ToArray());
-        protected virtual IDvExpr Get(OrderedOperator expr) => expr;
-        protected virtual IDvExpr Get(CommutativeAssociativeOperator expr) => expr;
-        protected virtual IDvExpr Get(Logarithm log) => log;
+
+        protected virtual IDvExpr Get(OrderedOperator expr) => Get(expr as Operator);
+
+        protected virtual IDvExpr Get(CommutativeAssociativeOperator expr) => Get(expr as Operator);
+
+        protected virtual IDvExpr Get(BinaryOperator expr) => Get(expr as OrderedOperator);
+
+        protected virtual IDvExpr Get(Logarithm log) => Get(log as BinaryOperator);
     }
 
     internal sealed class ConstSimplifier : BaseSimplifier
     {
-        private ConstSimplifier() { }
+        private ConstSimplifier()
+        {
+        }
+
         public static ConstSimplifier Singleton { get; } = new ConstSimplifier();
 
         protected override IDvExpr Get(OrderedOperator expr)
@@ -66,9 +72,8 @@ namespace Derivas.Simplifier
                 }
             }
 
-            IDvExpr res = new Constant(expr.OpFunc(constsOnly.ToArray()));
-            newOps.Insert(0, res);
-            return newOps.Count == 1 ? res : expr.CreateInstance(newOps.ToArray());
+            newOps.Insert(0, new Constant(expr.OpFunc(constsOnly.ToArray())));
+            return newOps.Count == 1 ? newOps[0] : expr.CreateInstance(newOps.ToArray());
         }
 
         protected override IDvExpr Get(Logarithm log)
@@ -78,7 +83,7 @@ namespace Derivas.Simplifier
             {
                 return res;
             }
-            
+
             log = res as Logarithm;
             if (log.Base is Constant bas && bas.Val == 1d)
             {
@@ -91,19 +96,38 @@ namespace Derivas.Simplifier
 
     internal sealed class PolynomSimplifier : BaseSimplifier
     {
-        private PolynomSimplifier() { }
-        public static PolynomSimplifier Singleton { get; } = new PolynomSimplifier();
-
-        protected override IDvExpr Get(OrderedOperator expr)
+        private PolynomSimplifier()
         {
-            return base.Get(expr);
         }
+
+        public static PolynomSimplifier Singleton { get; } = new PolynomSimplifier();
 
         protected override IDvExpr Get(CommutativeAssociativeOperator expr)
         {
-            return null;
-        }
+            var coeffs = new Dictionary<IDvExpr, double>();
+            foreach (var operand in expr.Operands)
+            {
+                if (coeffs.ContainsKey(operand))
+                {
+                    coeffs[operand] += 1d;
+                }
+                else
+                {
+                    coeffs[operand] = 1d;
+                }
+            }
 
+            var res = new List<IDvExpr>();
+            foreach (var pair in coeffs.AsEnumerable())
+            {
+                res.Add(
+                    pair.Value == 1d ? pair.Key :
+                    DvOps.Mul(DvOps.Const(pair.Value), pair.Key)
+                );
+            }
+
+            return expr.CreateInstance(res.ToArray());
+        }
     }
 
     public sealed partial class DvSimplifier

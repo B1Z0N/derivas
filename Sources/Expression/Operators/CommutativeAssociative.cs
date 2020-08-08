@@ -21,13 +21,13 @@ namespace Derivas.Expression
 
         #region subclass functionality
 
-        protected internal HashSet<IDvExpr> Operands_;
+        protected internal List<IDvExpr> Operands_;
 
         public CommutativeAssociativeOperator(string sign, int prio,
             Func<double[], double> op, params IDvExpr[] operands)
         {
             (Sign, Priority, OpFunc) = (sign, prio, op);
-            Operands_ = new HashSet<IDvExpr>(operands);
+            Operands_ = new List<IDvExpr>(operands);
         }
 
         #endregion subclass functionality
@@ -42,7 +42,7 @@ namespace Derivas.Expression
             => new CommutativeAssociativeOperator("+", 0, Addition, args);
 
         private static Func<double[], double> Multiplication =
-            args => args.Aggregate(0d, (fst, snd) => fst * snd);
+            args => args.Aggregate(1d, (fst, snd) => fst * snd);
 
         public static IDvExpr Mul(params IDvExpr[] args)
             => new CommutativeAssociativeOperator("*", 1, Multiplication, args);
