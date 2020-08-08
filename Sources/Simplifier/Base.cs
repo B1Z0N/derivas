@@ -1,11 +1,7 @@
-﻿using System;
+﻿using Derivas.Expression;
+using Derivas.Simplifier;
 using System.Collections.Generic;
 using System.Linq;
-
-using Derivas.Exception;
-using Derivas.Expression;
-using Derivas.Simplifier;
-
 
 namespace Derivas.Simplifier
 {
@@ -18,7 +14,11 @@ namespace Derivas.Simplifier
     {
         private IDvExpr Expr { get; set; }
         private Queue<ISimplifier> InvocationQ { get; } = new Queue<ISimplifier>();
-        private DvSimplifier(IDvExpr expr) { Expr = expr; }
+
+        private DvSimplifier(IDvExpr expr)
+        {
+            Expr = expr;
+        }
 
         internal static DvSimplifier Create(IDvExpr expr)
             => new DvSimplifier(expr);
@@ -59,6 +59,7 @@ namespace Derivas.Simplifier
         protected virtual IDvExpr Get(BinaryOperator expr) => Get(expr as OrderedOperator);
 
         protected virtual IDvExpr Get(Logarithm log) => Get(log as BinaryOperator);
+
     }
 }
 

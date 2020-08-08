@@ -49,7 +49,6 @@ namespace Derivas.Simplifier
             return newOps.Count == 1 ? newOps[0] : expr.CreateInstance(newOps.ToArray());
         }
 
-
         protected override IDvExpr Get(Logarithm log)
         {
             var res = base.Get(log);
@@ -106,6 +105,22 @@ namespace Derivas.Simplifier
         }
     }
 
+    internal sealed class PartialSimplifier : BaseSimplifier
+    {
+        private DvNameVal Dict { get; }
+
+        public PartialSimplifier(DvNameVal dict) => Dict = dict;
+
+        protected override IDvExpr Get(Operator expr)
+            => expr.CreateInstance(
+                expr.Operands.Select(el => el switch
+                {
+                    Symbol sym => Dict.TryGetValue(sym.Name, out var val) ? DvOps.Const(val) : sym,
+                    _ => Simplify(el)
+                }).ToArray()
+            );
+    }
+
     public sealed partial class DvSimplifier
     {
         public DvSimplifier ByConst()
@@ -119,5 +134,15 @@ namespace Derivas.Simplifier
             InvocationQ.Enqueue(PolynomSimplifier.Singleton);
             return this;
         }
+
+        public DvSimplifier ByPartial(DvNameVal dict)
+        {
+            InvocationQ.Enqueue(new PartialSimplifier(dict));
+            return this;
+        }
+
+        // shortcut
+        public DvSimplifier ByPartial(string sym, double val)
+            => ByPartial(new DvNameVal() { { sym, val } });
     }
 }
