@@ -1,5 +1,6 @@
 ﻿using Derivas.Exception;
 using System;
+using System.Collections.Generic;
 
 namespace Derivas.Exception
 {
@@ -20,7 +21,7 @@ namespace Derivas.Expression
 
         public Constant(double val) => Val = val;
 
-        public double Calculate(DvNameVal concrete) => Val;
+        public double Calculate(Dictionary<string, double> concrete) => Val;
 
         public string Represent() => $"{Val}";
 
@@ -40,7 +41,7 @@ namespace Derivas.Expression
 
         public Symbol(string name) => Name = name;
 
-        public double Calculate(DvNameVal concrete)
+        public double Calculate(Dictionary<string, double> concrete)
             => concrete.ContainsKey(Name) ? concrete[Name]
             : throw new DvSymbolMismatchException(Name);
 

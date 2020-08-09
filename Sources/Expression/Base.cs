@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Collections.Generic;
 
 using Derivas.Exception;
 
@@ -25,7 +26,7 @@ namespace Derivas.Expression
     {
         /// <summary>Substitute symbols to it's values</summary>
         /// <param name="nameVal">Dictionary of symbolName:value</param>
-        double Calculate(DvNameVal concrete);
+        double Calculate(Dictionary<string, double> concrete);
 
         /// <summary>User readable representation of this expression</summary>
         string Represent();

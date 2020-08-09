@@ -25,7 +25,7 @@ namespace Derivas.Expression
 
         #region IDvExpr interface implementation
 
-        public virtual double Calculate(DvNameVal concrete)
+        public virtual double Calculate(Dictionary<string, double> concrete)
             => OpFunc(
                 Operands.Select(
                     el => el.Calculate(concrete)
