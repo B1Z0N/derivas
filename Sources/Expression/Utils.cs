@@ -7,7 +7,8 @@ using Derivas.Exception;
 
 namespace Derivas.Expression
 {
-    /// <summary>Some common mathemtaical constants</summary>
+    // Some common mathemtaical constants
+
     public static partial class DvOps
     {
         public static IDvExpr E { get; } = new Constant(Math.E);
