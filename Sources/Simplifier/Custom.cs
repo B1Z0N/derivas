@@ -39,9 +39,14 @@ namespace Derivas.Simplifier
 
     public sealed partial class DvSimplifier
     {
-        public DvSimplifier ByCustom(IDvExpr from, IDvExpr to)
+        public DvSimplifier ByCustom(object from, object to)
         {
-            InvocationQ.Enqueue(new CustomSimplifier(from, to));
+            InvocationQ.Enqueue(
+                new CustomSimplifier(
+                    Utils.CheckExpr(from),
+                    Utils.CheckExpr(to)
+                )
+            );
             return this;
         }
     }

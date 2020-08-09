@@ -1,4 +1,19 @@
 ﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+
+using Derivas.Exception;
+
+namespace Derivas.Exception
+{
+    public class DvExpressionMismatch : DvBaseException
+    {
+        public DvExpressionMismatch(Type t)
+            : base($"You can't pass in {t} type, use int, string or IDvExpr")
+        {
+        }
+    }
+}
 
 /// <summary>
 /// Main userspace interface
@@ -11,10 +26,16 @@ namespace Derivas.Expression
     {
         /// <summary>Substitute symbols to it's values</summary>
         /// <param name="nameVal">Dictionary of symbolName:value</param>
-        double Calculate(DvNameVal concrete);
+        double Calculate(Dictionary<string, double> concrete);
 
         /// <summary>User readable representation of this expression</summary>
         string Represent();
+    }
+
+    public static partial class DvOps
+    {
+        private static IDvExpr CheckExpr(object arg) => Utils.CheckExpr(arg);
+        private static IDvExpr[] CheckExpr(object[] args) => Utils.CheckExpr(args);
     }
 
 }

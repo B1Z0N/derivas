@@ -27,40 +27,40 @@ namespace Derivas.Expression
 
     public static partial class DvOps
     {
-        public static IDvExpr Cos(IDvExpr of)
-            => new UnaryOperator(of, "cos", Math.Cos);
+        public static IDvExpr Cos(object of)
+            => new UnaryOperator(CheckExpr(of), "cos", Math.Cos);
 
-        public static IDvExpr Sin(IDvExpr of)
-            => new UnaryOperator(of, "sin", Math.Sin);
+        public static IDvExpr Sin(object of)
+            => new UnaryOperator(CheckExpr(of), "sin", Math.Sin);
 
-        public static IDvExpr Tan(IDvExpr of)
-            => new UnaryOperator(of, "tan", Math.Tan);
+        public static IDvExpr Tan(object of)
+            => new UnaryOperator(CheckExpr(of), "tan", Math.Tan);
 
-        public static IDvExpr Cotan(IDvExpr of)
-            => new UnaryOperator(of, "cotan", of => 1 / Math.Tan(of));
+        public static IDvExpr Cotan(object of)
+            => new UnaryOperator(CheckExpr(of), "cotan", of => 1 / Math.Tan(of));
 
-        public static IDvExpr Acos(IDvExpr of)
-            => new UnaryOperator(of, "arccos", Math.Acos);
+        public static IDvExpr Acos(object of)
+            => new UnaryOperator(CheckExpr(of), "arccos", Math.Acos);
 
-        public static IDvExpr Asin(IDvExpr of)
-            => new UnaryOperator(of, "arcsin", Math.Asin);
+        public static IDvExpr Asin(object of)
+            => new UnaryOperator(CheckExpr(of), "arcsin", Math.Asin);
 
-        public static IDvExpr Atan(IDvExpr of)
-            => new UnaryOperator(of, "arctan", Math.Atan);
+        public static IDvExpr Atan(object of)
+            => new UnaryOperator(CheckExpr(of), "arctan", Math.Atan);
 
-        public static IDvExpr Acotan(IDvExpr of)
-            => new UnaryOperator(of, "arccotan", of => Math.PI / 2 - Math.Atan(of));
+        public static IDvExpr Acotan(object of)
+            => new UnaryOperator(CheckExpr(of), "arccotan", of => Math.PI / 2 - Math.Atan(of));
 
-        public static IDvExpr Cosh(IDvExpr of)
-            => new UnaryOperator(of, "cosh", Math.Cosh);
+        public static IDvExpr Cosh(object of)
+            => new UnaryOperator(CheckExpr(of), "cosh", Math.Cosh);
 
-        public static IDvExpr Sinh(IDvExpr of)
-            => new UnaryOperator(of, "sinh", Math.Sinh);
+        public static IDvExpr Sinh(object of)
+            => new UnaryOperator(CheckExpr(of), "sinh", Math.Sinh);
 
-        public static IDvExpr Tanh(IDvExpr of)
-            => new UnaryOperator(of, "tanh", Math.Tanh);
+        public static IDvExpr Tanh(object of)
+            => new UnaryOperator(CheckExpr(of), "tanh", Math.Tanh);
 
-        public static IDvExpr Cotanh(IDvExpr of)
-            => new UnaryOperator(of, "cotanh", of => 1 / Math.Tanh(of));
+        public static IDvExpr Cotanh(object of)
+            => new UnaryOperator(CheckExpr(of), "cotanh", of => 1 / Math.Tanh(of));
     }
 }

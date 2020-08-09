@@ -1,6 +1,16 @@
-﻿using System;
+﻿using Derivas.Exception;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+
+namespace Derivas.Exception
+{
+    public class DvNotEnoughArguments : DvBaseException
+    {
+        public DvNotEnoughArguments(int nOrMore)
+            : base($"Not enough arguments passed, accepts {nOrMore} or more") { }
+    }
+}
 
 namespace Derivas.Expression
 {
@@ -27,7 +37,28 @@ namespace Derivas.Expression
             Func<double[], double> op, params IDvExpr[] operands)
         {
             (Sign, Priority, OpFunc) = (sign, prio, op);
-            Operands_ = new List<IDvExpr>(operands);
+            Operands_ = new List<IDvExpr>(FlattenSubOperands(operands));
+        }
+
+        public bool IsSameType(IDvExpr to)
+            => to is CommutativeAssociativeOperator op && op.Sign == Sign;
+
+        private IEnumerable<IDvExpr> FlattenSubOperands(IEnumerable<IDvExpr> operands)
+        {
+            IEnumerable<IDvExpr> res = new List<IDvExpr>();
+            foreach (var operand in operands)
+            {
+                if (operand is CommutativeAssociativeOperator op && op.Sign == Sign)
+                {
+                    res = res.Concat(FlattenSubOperands(op.Operands));
+                }
+                else
+                {
+                    res = res.Append(operand);
+                }
+            }
+
+            return res;
         }
 
         public CommutativeAssociativeOperator ReplaceSubOperands(
@@ -52,7 +83,7 @@ namespace Derivas.Expression
                     }
                     else
                     {
-                        res.Append(operand);
+                        res = res.Append(operand);
                     }
                 }
 
@@ -73,7 +104,7 @@ namespace Derivas.Expression
                 replaceCount = Math.Min(replaceCount, counter[operand]);
             }
 
-            IEnumerable<IDvExpr> 
+            IEnumerable<IDvExpr>
                 replaced = Enumerable.Repeat(with, replaceCount).SelectMany(x => x),
                 untouched = new List<IDvExpr>(Operands.Except(replaceOperands));
             foreach (var operand in replaceOperands)
@@ -92,16 +123,33 @@ namespace Derivas.Expression
 
     public static partial class DvOps
     {
+        #region helpers
+
         private static Func<double[], double> Addition =
             args => args.Aggregate(0d, (fst, snd) => fst + snd);
-
-        public static IDvExpr Add(params IDvExpr[] args)
-            => new CommutativeAssociativeOperator("+", 0, Addition, args);
 
         private static Func<double[], double> Multiplication =
             args => args.Aggregate(1d, (fst, snd) => fst * snd);
 
-        public static IDvExpr Mul(params IDvExpr[] args)
-            => new CommutativeAssociativeOperator("*", 1, Multiplication, args);
+        private static IDvExpr CheckForLessThanTwo(Func<IDvExpr[], IDvExpr> createF, params IDvExpr[] args)
+            => args.Count() < 2 ? throw new DvNotEnoughArguments(2) : createF(args);
+
+        #endregion helpers
+
+        #region userspace methods
+
+        public static IDvExpr Add(params object[] args)
+            => CheckForLessThanTwo(
+                ops => new CommutativeAssociativeOperator("+", 0, Addition, ops),
+                CheckExpr(args)
+            );
+
+        public static IDvExpr Mul(params object[] args)
+            => CheckForLessThanTwo(
+                ops => new CommutativeAssociativeOperator("*", 1, Multiplication, ops),
+                CheckExpr(args)
+            );
+
+        #endregion userspace methods
     }
 }
