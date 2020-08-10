@@ -13,6 +13,7 @@ namespace Derivas.Simplifier
 
         private static readonly Lazy<ConstSimplifier> lazy =
             new Lazy<ConstSimplifier>(() => new ConstSimplifier());
+
         public static ConstSimplifier Singleton => lazy.Value;
 
         protected override IDvExpr Get(OrderedOperator expr)
@@ -48,8 +49,31 @@ namespace Derivas.Simplifier
                 }
             }
 
-            newOps.AddFirst(new Constant(expr.OpFunc(constsOnly.ToArray())));
-            return newOps.Count == 1 ? newOps.First() : expr.CreateInstance(newOps.ToArray());
+            double constRes = expr.OpFunc(constsOnly.ToArray()),
+                   neutral = expr.OpFunc(new double[0]);
+            newOps.AddFirst(new Constant(constRes));
+            newOps = new LinkedList<IDvExpr>(
+                newOps.Where(
+                    el => !(el is Constant con) || con.Val != neutral
+                ));
+
+            if (newOps.Count() == 1)
+            {
+                return newOps.First();
+            }
+            else
+            {
+                expr = expr.CreateInstance(newOps.ToArray()) as CommutativeAssociativeOperator;
+                return expr.Sign switch
+                {
+                    "*" => Mul(expr),
+                    _ => expr
+                };
+            }
+
+            IDvExpr Mul(CommutativeAssociativeOperator op)
+                => op.Operands.Any(el => el is Constant con && con.Val == 0d)
+                ? DvOps.Const(0d) : op;
         }
 
         protected override IDvExpr Get(Logarithm log)
@@ -78,6 +102,7 @@ namespace Derivas.Simplifier
 
         private static readonly Lazy<PolynomSimplifier> lazy =
             new Lazy<PolynomSimplifier>(() => new PolynomSimplifier());
+
         public static PolynomSimplifier Singleton => lazy.Value;
 
         protected override IDvExpr Get(CommutativeAssociativeOperator expr)
