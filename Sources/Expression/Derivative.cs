@@ -59,11 +59,46 @@ namespace Derivas.Expression
         {
             return uop.Sign switch
             {
-
+                "cos" => DerCos(uop),
+                "sin" => DerSin(uop),
+                "tan" => DerTan(uop),
+                "cotan" => DerCotan(uop),
+                "arccos" => DerAcos(uop),
+                "arcsin" => DerAsin(uop),
+                "arctan" => DerAtan(uop),
+                "arccotan" => DerAcotan(uop),
+                "cosh" => DerCosh(uop),
+                "sinh" => DerSinh(uop),
+                "tanh" => DerTanh(uop),
+                "cotanh" => DerCotanh(uop),
                 _ => throw new DvDerivativeMismatch(uop.GetType(), $"no such expr name: {uop.Sign}")
             };
 
-            // TODO
+            // -sin(x)
+            IDvExpr DerCos(UnaryOperator op) => Mul(-1, Sin(op.Of), Get(op.Of));
+            // cos(x)
+            IDvExpr DerSin(UnaryOperator op) => Mul(Cos(op.Of), Get(op.Of));
+            // 1/cos^2(x)
+            IDvExpr DerTan(UnaryOperator op) => Mul(Div(1, Pow(Cos(op.Of), 2)), Get(op.Of));
+            // -1/sin^2(x)
+            IDvExpr DerCotan(UnaryOperator op) => Mul(-1, Div(1, Pow(Sin(op.Of), 2)), Get(op.Of));
+            // -1/sqrt(1-x^2)
+            IDvExpr DerAcos(UnaryOperator op) => Mul(-1, DerAsin(op));
+            // 1/sqrt(1-x^2)
+            IDvExpr DerAsin(UnaryOperator op) => Mul(Div(1, Pow(Sub(1, Pow(op.Of, 2)), 0.5)), Get(op.Of));
+            // 1/(1+x^2)
+            IDvExpr DerAtan(UnaryOperator op) => Mul(Div(1, Add(1, Pow(op.Of, 2))), Get(op.Of));
+            // -1/(1+x^2)
+            IDvExpr DerAcotan(UnaryOperator op) => Mul(-1, DerAtan(op));
+            // sinh
+            IDvExpr DerCosh(UnaryOperator op) => Mul(Sinh(op.Of), Get(op.Of));
+            // -cosh
+            IDvExpr DerSinh(UnaryOperator op) => Mul(-1, Cosh(op.Of), Get(op.Of));
+            // 1/cosh^2(x)
+            IDvExpr DerTanh(UnaryOperator op) => Mul(Div(1, Pow(Cosh(op.Of), 2)), Get(op.Of));
+            // -1/sinh^2(x)
+            IDvExpr DerCotanh(UnaryOperator op) => Mul(-1, Div(1, Pow(Sinh(op.Of), 2)), Get(op.Of));
+
         }
 
         #region binary operator
@@ -109,8 +144,16 @@ namespace Derivas.Expression
 
             IDvExpr Multiplication(CommutativeAssociativeOperator op)
             {
-                // TODO
-                return null;
+                var fst = op.Operands.ElementAt(0);
+                if (op.Operands.Count() == 2)
+                {
+                    var snd = op.Operands.ElementAt(1);
+
+                    return Add(Mul(Get(fst), snd), Mul(Get(snd), fst));
+                }
+
+                var other = op.CreateInstance(op.Operands.Skip(1).ToArray());
+                return Add(Mul(Get(fst), other), Mul(Get(other), fst));
             }
         }
 
