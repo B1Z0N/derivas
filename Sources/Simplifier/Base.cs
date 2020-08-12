@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Derivas.Simplifier
 {
-    internal interface ISimplifier
+    public interface IDvSimplifier
     {
         IDvExpr Simplify(IDvExpr expr);
     }
@@ -13,7 +13,7 @@ namespace Derivas.Simplifier
     public sealed partial class DvSimplifier
     {
         private IDvExpr Expr { get; set; }
-        private Queue<ISimplifier> InvocationQ { get; } = new Queue<ISimplifier>();
+        private Queue<IDvSimplifier> InvocationQ { get; } = new Queue<IDvSimplifier>();
 
         private DvSimplifier(IDvExpr expr)
         {
@@ -34,7 +34,7 @@ namespace Derivas.Simplifier
         }
     }
 
-    internal abstract class BaseSimplifier : ISimplifier
+    internal abstract class BaseSimplifier : IDvSimplifier
     {
         public IDvExpr Simplify(IDvExpr expr)
             => expr switch

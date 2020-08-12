@@ -151,6 +151,13 @@ namespace Derivas.Simplifier
             );
     }
 
+    internal class FuncSimplifier : IDvSimplifier
+    {
+        private Func<IDvExpr, IDvExpr> SimplF { get; }
+        public FuncSimplifier(Func<IDvExpr, IDvExpr> simplF) => SimplF = simplF;
+        public IDvExpr Simplify(IDvExpr expr) => SimplF(expr);
+    }
+
     public sealed partial class DvSimplifier
     {
         public DvSimplifier ByConst()

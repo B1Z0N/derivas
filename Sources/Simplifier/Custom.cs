@@ -49,5 +49,17 @@ namespace Derivas.Simplifier
             );
             return this;
         }
+
+        public DvSimplifier ByCustom(IDvSimplifier simpl)
+        {
+            InvocationQ.Enqueue(simpl);
+            return this;
+        }
+
+        public DvSimplifier ByCustom(Func<IDvExpr, IDvExpr> simplF)
+        {
+            InvocationQ.Enqueue(new FuncSimplifier(simplF));
+            return this;
+        }
     }
 }
