@@ -7,10 +7,6 @@ using Derivas.Exception;
 
 namespace Derivas.Expression
 {
-    /// <summary>
-    /// Abstract class to define functionality and interface(in broader sense)
-    /// to all nongeneric MultiArgOperator functionality
-    /// </summary>
     internal abstract class OrderedOperator : Operator
     {
         #region base class functionality

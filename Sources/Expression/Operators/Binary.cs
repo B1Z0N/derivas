@@ -2,6 +2,9 @@
 
 namespace Derivas.Expression
 {
+    /// <summary>
+    /// Binary ordered operator
+    /// </summary>
     internal class BinaryOperator : OrderedOperator
     {
         public IDvExpr First

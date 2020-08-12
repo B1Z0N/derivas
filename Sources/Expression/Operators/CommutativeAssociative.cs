@@ -61,6 +61,13 @@ namespace Derivas.Expression
             return res;
         }
 
+
+        /// <summary>
+        /// Replace some operand/operands with other operands
+        /// </summary>
+        /// <param name="replaceOperands"></param>
+        /// <param name="with"></param>
+        /// <returns></returns>
         public CommutativeAssociativeOperator ReplaceSubOperands(
             IEnumerable<IDvExpr> replaceOperands,
             IEnumerable<IDvExpr> with)

@@ -5,11 +5,14 @@ using System.Linq;
 
 namespace Derivas.Simplifier
 {
+
+    /// <summary>Interface to simplify IDvExpr</summary>
     public interface IDvSimplifier
     {
         IDvExpr Simplify(IDvExpr expr);
     }
 
+    /// <summary>Entrance to all kinds of simplifiers</summary>
     public sealed partial class DvSimplifier
     {
         private IDvExpr Expr { get; set; }
