@@ -30,7 +30,7 @@ namespace Derivas.Expression
         public bool Equals(IDvExpr other)
             => (other as Constant)?.Val == Val;
 
-        public override int GetHashCode() => Val.GetHashCode();
+        public override int GetHashCode() => HashCode.Combine(Val, GetType());
 
         public IDvExpr Clone() => new Constant(Val);
     }
@@ -52,7 +52,7 @@ namespace Derivas.Expression
         public bool Equals(IDvExpr other)
             => (other as Symbol)?.Name == Name;
 
-        public override int GetHashCode() => Name.GetHashCode();
+        public override int GetHashCode() => HashCode.Combine(Name, GetType());
 
         public IDvExpr Clone() => new Symbol(Name);
     }
