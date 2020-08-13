@@ -46,13 +46,10 @@ namespace Derivas.Expression
 
         private IDvExpr Get(Logarithm log)
         {
-            IDvExpr bas = log.Base, pow = log.Of;
-            return Mul(
-                log, Add(
-                    Mul(Get(pow), Log(bas)),
-                    Div(Mul(pow, Get(bas)), bas)
-                )
-            );
+            IDvExpr bas = log.Base, of = log.Of;
+            return bas == E ? Natural(of) : Get(Div(Natural(of), Natural(bas)));
+
+            IDvExpr Natural(IDvExpr of) => Mul(Div(1, of), Get(of));
         }
 
         private IDvExpr Get(UnaryOperator uop)
