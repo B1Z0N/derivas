@@ -43,6 +43,10 @@ namespace Derivas.Expression
         public bool IsSameType(IDvExpr to)
             => to is CommutativeAssociativeOperator op && op.Sign == Sign;
 
+
+        /// <summary>
+        /// Transform Caop(1, 2, Caop(1, 2, 3)) to Caop(1, 2, 3, 4)
+        /// </summary>
         private IEnumerable<IDvExpr> FlattenSubOperands(IEnumerable<IDvExpr> operands)
         {
             IEnumerable<IDvExpr> res = new List<IDvExpr>();
@@ -61,13 +65,9 @@ namespace Derivas.Expression
             return res;
         }
 
-
         /// <summary>
         /// Replace some operand/operands with other operands
         /// </summary>
-        /// <param name="replaceOperands"></param>
-        /// <param name="with"></param>
-        /// <returns></returns>
         public CommutativeAssociativeOperator ReplaceSubOperands(
             IEnumerable<IDvExpr> replaceOperands,
             IEnumerable<IDvExpr> with)

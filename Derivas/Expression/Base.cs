@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 using Derivas.Exception;
+
+[assembly: InternalsVisibleTo("DerivasTests")]
 
 namespace Derivas.Exception
 {
@@ -26,7 +29,7 @@ namespace Derivas.Expression
     {
         /// <summary>Substitute symbols to it's values</summary>
         /// <param name="nameVal">Dictionary of symbolName:value</param>
-        double Calculate(Dictionary<string, double> concrete);
+        double Calculate(IDictionary<string, double> concrete);
 
         /// <summary>User readable representation of this expression</summary>
         string Represent();
