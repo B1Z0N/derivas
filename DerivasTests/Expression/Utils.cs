@@ -37,7 +37,7 @@ namespace Derivas.Expression.Tests
             }
 
             Assert.AreEqual(new Symbol("x"), Utils.CheckExpr("x"));
-            Assert.Throws<DvExpressionMismatch>(() => Utils.CheckExpr(true));
+            Assert.Throws<DvExpressionMismatchException>(() => Utils.CheckExpr(true));
         }
     }
 }

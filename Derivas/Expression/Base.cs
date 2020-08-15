@@ -9,11 +9,16 @@ using Derivas.Exception;
 
 namespace Derivas.Exception
 {
-    public class DvExpressionMismatch : DvBaseException
+    /// <summary>
+    /// Symbol value not supplied during calculation
+    /// </summary>
+    public class DvExpressionMismatchException : DvBaseException
     {
-        public DvExpressionMismatch(Type t)
+        public Type WrongType;
+        public DvExpressionMismatchException(Type t)
             : base($"You can't pass in {t} type, use int, string or IDvExpr")
         {
+            WrongType = t;
         }
     }
 }

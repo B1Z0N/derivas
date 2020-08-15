@@ -4,12 +4,15 @@ using System.Collections.Generic;
 
 namespace Derivas.Exception
 {
+    /// <summary>
+    /// Symbol value not supplied during calculation
+    /// </summary>
     public class DvSymbolMismatchException : DvBaseException
     {
-        public DvSymbolMismatchException(string shouldbe)
-            : base($"Value of '{shouldbe}' Symbol is not included in the dictionary")
-        {
-        }
+        public string ShouldBe;
+        public DvSymbolMismatchException(string shouldBe)
+            : base($"Value of '{shouldBe}' Symbol is not included in the dictionary")
+            => ShouldBe = shouldBe;
     }
 }
 

@@ -50,7 +50,7 @@ namespace Derivas.Expression
             {
                 string name => new Symbol(name),
                 IDvExpr expression => expression,
-                _ => throw new DvExpressionMismatch(expr.GetType())
+                _ => throw new DvExpressionMismatchException(expr.GetType())
             };
 
         private static bool IsNumber(object value)

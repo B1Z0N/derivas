@@ -1,0 +1,177 @@
+<html>
+<head></head>
+<body style="background-color:#7acfd6;">
+<h1 id="about">About</h1>
+<p>Library for analytical calculation of mathematical expressions. 
+Сurrently derivative and simplifiers are supported.</p>
+<p>P.S. this is just my project to learn some C# basics, so take it easy</p>
+<h1 id="notes">Notes</h1>
+<ol>
+<li><p><strong>For all of this to work you need to prepend each piece with</strong></p>
+<pre><code> <span class="hljs-keyword">using</span> <span class="hljs-keyword">static</span> Derivas.Expression.DvOps;
+</code></pre><p> But you may use it as you want in your real code.</p>
+</li>
+<li><p>Most of the methods accept <code>object</code> as it&#39;s argument, but
+ this means that you can pass in numeric type(shortcut for a <code>Const</code>) or
+ string(for a <code>Sym</code>) and <code>IDvExpr</code>. This was done to prevent writing this:</p>
+<pre><code> Add(<span class="hljs-name">Const</span>(<span class="hljs-number">3</span>), Sym(<span class="hljs-string">"x"</span>), Pow(<span class="hljs-name">Const</span>(<span class="hljs-number">5</span>), Const(<span class="hljs-number">3</span>))
+</code></pre><p> And transform it to </p>
+<pre><code> Add(<span class="hljs-number">3</span>, <span class="hljs-string">"x"</span>, Pow(<span class="hljs-number">5</span>, <span class="hljs-number">3</span>))
+</code></pre></li>
+</ol>
+<h1 id="table-of-contents">Table of contents</h1>
+<ul>
+<li><a href="#about">About</a></li>
+<li><a href="#notes">Notes</a></li>
+<li><a href="#table-of-contents">Table of contents</a></li>
+<li><a href="#example">Example</a></li>
+<li><a href="#entities">Entities</a><ul>
+<li><a href="#idvexpr"><code>IDvExpr</code></a></li>
+<li><a href="#idvsimplifier"><code>IDvSimplifier</code></a><ul>
+<li><a href="#byconst">ByConst</a></li>
+<li><a href="#bypolynom">ByPolynom</a></li>
+<li><a href="#bypartial">ByPartial</a></li>
+<li><a href="#bycustom">ByCustom</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#expressions-reference">Expressions reference</a><ul>
+<li><a href="#commutativeassocitaiveoperator">CommutativeAssocitaiveOperator</a></li>
+<li><a href="#binaryoperator">BinaryOperator</a></li>
+<li><a href="#unaryoperator">UnaryOperator</a></li>
+<li><a href="#others">Others</a></li>
+</ul>
+</li>
+<li><a href="#utility">Utility</a><ul>
+<li><a href="#dict">Dict</a></li>
+<li><a href="#constants">Constants</a></li>
+</ul>
+</li>
+</ul>
+<h1 id="example">Example</h1>
+<pre><code><span class="hljs-keyword">using</span> <span class="hljs-keyword">static</span> Derivas.Expression.DvOps;
+
+<span class="hljs-keyword">namespace</span> <span class="hljs-title">Usage</span>
+{
+    <span class="hljs-keyword">internal</span> <span class="hljs-keyword">class</span> <span class="hljs-title">Program</span>
+    {
+        <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Main</span>(<span class="hljs-params"><span class="hljs-keyword">string</span>[] args</span>)
+        </span>{
+            <span class="hljs-keyword">var</span> finExpr = Add(Pow(Sin(<span class="hljs-string">"x"</span>), <span class="hljs-number">2</span>), Pow(Cos(<span class="hljs-string">"x"</span>), <span class="hljs-number">2</span>));
+            <span class="hljs-keyword">var</span> finDict = <span class="hljs-keyword">new</span> Dictionary&lt;<span class="hljs-keyword">string</span>, <span class="hljs-keyword">double</span>&gt;() 
+            { 
+                { <span class="hljs-string">"x"</span>, Math.PI }, { <span class="hljs-string">"y"</span>, <span class="hljs-number">1</span> }
+            };
+            Print(finExpr, finDict);
+            <span class="hljs-comment">// sin(x) ^ 2 + cos(x) ^ 2</span>
+            <span class="hljs-comment">// 1</span>
+            <span class="hljs-keyword">var</span> derived = Der(finExpr, <span class="hljs-string">"x"</span>);
+            Print(derived, finDict);
+            <span class="hljs-comment">// 2 * sin(x) * cos(x) - 2 * cos(x) * sin(x)</span>
+            <span class="hljs-comment">// 0</span>
+
+            <span class="hljs-keyword">var</span> simplified = Simpl(finExpr)
+                .ByCustom(Pow(Sin(<span class="hljs-string">"x"</span>), <span class="hljs-number">2</span>), <span class="hljs-number">3</span>)
+                .Simplify();
+            Print(simplified, finDict);
+            <span class="hljs-comment">// 3 + cos(x) ^ 2</span>
+            <span class="hljs-comment">// 4</span>
+        }
+
+        <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">Print</span>(<span class="hljs-params">IDvExpr expr, Dictionary&lt;<span class="hljs-keyword">string</span>, <span class="hljs-keyword">double</span>&gt; dict</span>)
+        </span>{
+            Console.WriteLine(expr.Represent());
+            Console.WriteLine(expr.Calculate(dict));
+        }
+    }
+}
+</code></pre><h1 id="entities">Entities</h1>
+<p>There are two main entities in Derivas: <code>Expression</code> and <code>Simplifier</code>. Which implemented as interfaces: <code>IDvExpr</code> and <code>IDvSimplifier</code> accordingly.</p>
+<h3 id="-idvexpr-"><code>IDvExpr</code></h3>
+<p>Ultimate base interface. Symbol, Constant, Operators implement it.</p>
+<pre><code>interface IDvExpr : IEquatable&lt;IDvExpr&gt;
+{
+    <span class="hljs-function"><span class="hljs-keyword">double</span> <span class="hljs-title">Calculate</span><span class="hljs-params">(IDictionary&lt;<span class="hljs-built_in">string</span>, <span class="hljs-keyword">double</span>&gt; concrete)</span></span>;
+    <span class="hljs-function"><span class="hljs-built_in">string</span> <span class="hljs-title">Represent</span><span class="hljs-params">()</span></span>;
+}
+</code></pre><p>Go to the full expressions reference <a href="#expressions-reference">here</a>.</p>
+<h3 id="-idvsimplifier-"><code>IDvSimplifier</code></h3>
+<p>Simplifier performs some kind of transformation, it has only one method:</p>
+<pre><code>IDvExpr Simplify(<span class="hljs-name">IDvExpr</span> expr)
+</code></pre><p>In external API you should use it like this: </p>
+<pre><code>IDvExpr res = Simpl(<span class="hljs-comment">/* IDvExpr */</span> expr)
+    .<span class="hljs-keyword">By</span><span class="hljs-params">...</span>()
+    .<span class="hljs-keyword">By</span><span class="hljs-params">...</span>()
+    .Simplify();
+</code></pre><p>There are 4 kinds of simplifiers:</p>
+<h4 id="byconst">ByConst</h4>
+<p>Partially reduce constants in operators:</p>
+<pre><code>Add(<span class="hljs-number">3</span>, <span class="hljs-number">5</span>, <span class="hljs-number">10</span>) -&gt; Const(<span class="hljs-number">18</span>)
+Mul(<span class="hljs-number">3</span>, <span class="hljs-number">5</span>, <span class="hljs-string">"x"</span>) -&gt; Add(<span class="hljs-number">8</span>, <span class="hljs-string">"x"</span>)
+</code></pre><h4 id="bypolynom">ByPolynom</h4>
+<p>Collect similiar expressions in one scope:</p>
+<pre><code>Add(<span class="hljs-string">"x"</span>, <span class="hljs-string">"x"</span>, <span class="hljs-string">"x"</span>) -&gt; Mul(<span class="hljs-number">3</span>, <span class="hljs-string">"x"</span>)
+Add(<span class="hljs-string">"x"</span>, <span class="hljs-string">"y"</span>, <span class="hljs-string">"x"</span>) -&gt; Add(<span class="hljs-name">Mul</span>(<span class="hljs-number">2</span>, <span class="hljs-string">"x"</span>), <span class="hljs-string">"y"</span>)
+</code></pre><h4 id="bypartial">ByPartial</h4>
+<p>Partially replace some symbols from dictionary or by hand:
+The <code>Dict</code> is explained <a href="#utility">here</a></p>
+<pre><code>IDictionary&lt;<span class="hljs-type">string</span>, double&gt; d = Dict.Add(<span class="hljs-string">"x"</span>, <span class="hljs-number">5</span>).Add(<span class="hljs-string">"y"</span>, <span class="hljs-number">3</span>).Get();
+var expr = Add(<span class="hljs-string">"x"</span>, Pow(<span class="hljs-number">2</span>, <span class="hljs-string">"y"</span>), <span class="hljs-string">"z"</span>);
+var simplified = Simpl(expr).ByPartial(d).Simplify();
+<span class="hljs-comment">// 5 + 2 ^ 3 + z</span>
+var orTheSame = Simpl(expr).ByPartial(<span class="hljs-string">"x"</span>, <span class="hljs-number">5</span>).ByPartial(<span class="hljs-string">"y"</span>, <span class="hljs-number">3</span>).Simplify();
+<span class="hljs-comment">// 5 + 2 ^ 3 + z</span>
+</code></pre><h4 id="bycustom">ByCustom</h4>
+<p>Replace one IDvExpr with other or use your own simplfiers:</p>
+<pre><code><span class="hljs-keyword">var</span> <span class="hljs-built_in">expr</span> = <span class="hljs-type">Log</span>(<span class="hljs-type">Mul</span>(<span class="hljs-number">2</span>, <span class="hljs-string">"x"</span>), <span class="hljs-number">3</span>);
+
+<span class="hljs-keyword">var</span> replaced = <span class="hljs-type">Simpl</span>(<span class="hljs-built_in">expr</span>).<span class="hljs-type">ByCustom</span>(<span class="hljs-number">3</span>, <span class="hljs-type">DvConsts</span>.E).<span class="hljs-type">Simplify</span>();
+<span class="hljs-keyword">var</span> orTheSame = <span class="hljs-type">Simpl</span>(<span class="hljs-built_in">expr</span>)
+    .<span class="hljs-type">ByCustom</span>(<span class="hljs-built_in">expr</span> =&gt; <span class="hljs-type">Const</span>(<span class="hljs-number">3</span>).<span class="hljs-type">Equals</span>(<span class="hljs-built_in">expr</span>) ? <span class="hljs-type">DvConsts</span>.E : <span class="hljs-built_in">expr</span>)
+    .<span class="hljs-type">Simplify</span>();
+</code></pre><h1 id="expressions-reference">Expressions reference</h1>
+<h3 id="commutativeassocitaiveoperator">CommutativeAssocitaiveOperator</h3>
+<ul>
+<li>API: <code>Add</code>, <code>Mul</code></li>
+<li>Description: takes more than one argument, order doesn&#39;t matter</li>
+<li>Example: <code>Add(3, 5, &quot;x&quot;, Add(6, 3))</code></li>
+<li>Throws: <code>DvNotEnoughArguments</code></li>
+</ul>
+<h3 id="binaryoperator">BinaryOperator</h3>
+<ul>
+<li>API: <code>Sub</code>, <code>Div</code>, <code>Pow</code></li>
+<li>Description: takes only two arguments, order does matter</li>
+<li>Example: <code>Div(Pow(1, 2), 0)</code></li>
+<li>Throws: <strong>no Dv exceptions</strong></li>
+</ul>
+<h3 id="unaryoperator">UnaryOperator</h3>
+<ul>
+<li>API:<ol>
+<li><code>Cos</code>, <code>Sin</code>, <code>Tan</code>, <code>Cotan</code></li>
+<li><code>Acos</code>, <code>Asin</code>, <code>Atan</code>, <code>Acotan</code></li>
+<li><code>Cosh</code>, <code>Sinh</code>, <code>Tanh</code>, <code>Cotanh</code></li>
+</ol>
+</li>
+<li>Description: takes one argument</li>
+<li>Example: <code>Cos(Sin(DvConsts.PI)) // equals 1</code> </li>
+<li>Throws: <strong>no Dv exceptions</strong></li>
+</ul>
+<h3 id="others">Others</h3>
+<ul>
+<li><code>Log</code> - acts just like <code>Math.Log</code>, takes two parameters and one is optional</li>
+<li><code>Der</code> - takes expression and symbol to take derivative on. </li>
+</ul>
+<h1 id="utility">Utility</h1>
+<p>Some useful features to help you using the library.</p>
+<h3 id="dict">Dict</h3>
+<p>You will frequently need an <code>IDictionary&lt;string, double&gt;</code> to pass into <code>Calculate</code> or other such methods. but it&#39;s very verbose to create new dictionary each time, so here you go, a shortcut:</p>
+<pre><code><span class="hljs-built_in">double</span> res = expr.Calculate(Dict.<span class="hljs-keyword">Add</span>(<span class="hljs-string">"x"</span>, <span class="hljs-number">1</span>).<span class="hljs-keyword">Add</span>(<span class="hljs-string">"y"</span>, <span class="hljs-number">3</span>).Get());
+</code></pre><h3 id="constants">Constants</h3>
+<p>Common mathematical constants in <code>IDvExpr</code>(surrounded with <code>DvOps.Const</code>):</p>
+<ul>
+<li><code>DvOps.DvConsts.E</code></li>
+<li><code>Dvops.DvConsts.PI</code></li>
+</ul>
+</body>
+</html>

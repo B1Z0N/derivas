@@ -43,6 +43,7 @@ P.S. this is just my project to learn some C# basics, so take it easy
     + [BinaryOperator](#binaryoperator)
     + [UnaryOperator](#unaryoperator)
     + [Others](#others)
+- [Exceptions](#exceptions)
 - [Utility](#utility)
     + [Dict](#dict)
     + [Constants](#constants)
@@ -194,6 +195,18 @@ var orTheSame = Simpl(expr)
 * `Log` - acts just like `Math.Log`, takes two parameters and one is optional
 * `Der` - takes expression and symbol to take derivative on. 
 
+# Exceptions
+
+All exceptions are located in `Derivas.Exception` namespace.
+
+* DvBaseException - base exception class for the project
+
+* DvSymbolMismatchException - symbol value not supplied during calculation
+
+* DvDerivativeMimatchException - no derivative rule for this expression
+
+* DvNotEnoughArguments - wrong number of arguments passed to the operator
+
 # Utility
 
 Some useful features to help you using the library.
@@ -210,3 +223,5 @@ double res = expr.Calculate(Dict.Add("x", 1).Add("y", 3).Get());
 Common mathematical constants in `IDvExpr`(surrounded with `DvOps.Const`):
 * `DvOps.DvConsts.E`
 * `Dvops.DvConsts.PI`
+
+

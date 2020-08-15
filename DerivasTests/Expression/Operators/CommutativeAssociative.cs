@@ -28,9 +28,9 @@ namespace Derivas.Expression.Tests
 
             foreach (var op in new Func<object[], IDvExpr>[] { Add, Mul })
             {
-                Assert.Throws<DvNotEnoughArguments>(() => op(new object[0]));
-                Assert.Throws<DvNotEnoughArguments>(() => op(new object[] { 1 }));
-                Assert.Throws<DvNotEnoughArguments>(() => op(new object[] { "x" }));
+                Assert.Throws<DvNotEnoughArgumentsException>(() => op(new object[0]));
+                Assert.Throws<DvNotEnoughArgumentsException>(() => op(new object[] { 1 }));
+                Assert.Throws<DvNotEnoughArgumentsException>(() => op(new object[] { "x" }));
             }
         }
     }

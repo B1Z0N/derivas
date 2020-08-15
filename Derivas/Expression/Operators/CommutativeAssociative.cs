@@ -5,10 +5,15 @@ using System.Linq;
 
 namespace Derivas.Exception
 {
-    public class DvNotEnoughArguments : DvBaseException
+    /// <summary>
+    /// Wrong number of arguments passed
+    /// </summary>
+    public class DvNotEnoughArgumentsException : DvBaseException
     {
-        public DvNotEnoughArguments(int nOrMore)
-            : base($"Not enough arguments passed, accepts {nOrMore} or more") { }
+        public int NOrMore;
+        public DvNotEnoughArgumentsException(int nOrMore)
+            : base($"Not enough arguments passed, accepts {nOrMore} or more")
+            => NOrMore = nOrMore;
     }
 }
 
@@ -152,7 +157,7 @@ namespace Derivas.Expression
             args => args.Aggregate(1d, (fst, snd) => fst * snd);
 
         private static IDvExpr CheckForLessThanTwo(Func<IDvExpr[], IDvExpr> createF, params IDvExpr[] args)
-            => args.Count() < 2 ? throw new DvNotEnoughArguments(2) : createF(args);
+            => args.Count() < 2 ? throw new DvNotEnoughArgumentsException(2) : createF(args);
 
         #endregion helpers
 
