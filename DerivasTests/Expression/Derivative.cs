@@ -46,7 +46,7 @@ namespace Derivas.Expression.Tests
 
             Assert.AreEqual(Der(Log(1), "x").Calculate(EmptyNameVal), 0d);
             Assert.AreEqual(Der(Log("x"), "x").Calculate(d), 1d);
-            Assert.AreEqual(Der(Log("x"), "x"), Der(Log("x", DvOps.E), "x"));
+            Assert.AreEqual(Der(Log("x"), "x"), Der(Log("x", DvConsts.E), "x"));
         }
 
         [Test()]

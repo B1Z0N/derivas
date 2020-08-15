@@ -14,8 +14,8 @@ namespace Derivas.Expression.Tests
         [Test()]
         public void TestConstants()
         {
-            Assert.AreEqual(Math.E, DvOps.E.Calculate(EmptyNameVal));
-            Assert.AreEqual(Math.PI, DvOps.PI.Calculate(EmptyNameVal));
+            Assert.AreEqual(Math.E, DvOps.DvConsts.E.Calculate(EmptyNameVal));
+            Assert.AreEqual(Math.PI, DvOps.DvConsts.PI.Calculate(EmptyNameVal));
         }
 
         [Test()]
