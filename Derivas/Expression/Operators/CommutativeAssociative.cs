@@ -68,7 +68,7 @@ namespace Derivas.Expression
         /// <summary>
         /// Replace some operand/operands with other operands
         /// </summary>
-        public CommutativeAssociativeOperator ReplaceSubOperands(
+        public IDvExpr ReplaceSubOperands(
             IEnumerable<IDvExpr> replaceOperands,
             IEnumerable<IDvExpr> with)
         {
@@ -120,12 +120,29 @@ namespace Derivas.Expression
                 untouched = untouched.Concat(Enumerable.Repeat(operand, counter[operand]));
             }
 
-            return CreateInstance(
+            var instance = CreateInstance(
                 Enumerable.Concat(untouched, replaced).ToArray()
             ) as CommutativeAssociativeOperator;
+
+            return instance.Operands.Count() == 1 ? instance.Operands_[0] : instance;
         }
 
         #endregion subclass functionality
+
+        #region equals related stuff
+
+        public override bool Equals(IDvExpr expr)
+        {
+            return expr is CommutativeAssociativeOperator @operator && Sign == @operator.Sign &&
+                   new HashSet<IDvExpr>(Operands).SetEquals(@operator.Operands);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(base.GetHashCode(), Sign);
+        }
+
+        #endregion
     }
 
     public static partial class DvOps
