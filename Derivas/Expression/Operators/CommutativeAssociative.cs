@@ -132,15 +132,11 @@ namespace Derivas.Expression
         #region equals related stuff
 
         public override bool Equals(IDvExpr expr)
-        {
-            return expr is CommutativeAssociativeOperator @operator && Sign == @operator.Sign &&
-                   new HashSet<IDvExpr>(Operands).SetEquals(@operator.Operands);
-        }
+            => expr is CommutativeAssociativeOperator @operator && 
+            Sign == @operator.Sign && new HashSet<IDvExpr>(Operands)
+            .SetEquals(@operator.Operands);
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(base.GetHashCode(), Sign);
-        }
+        public override int GetHashCode() => HashCode.Combine(base.GetHashCode(), Sign);
 
         #endregion
     }
