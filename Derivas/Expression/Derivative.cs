@@ -47,7 +47,7 @@ namespace Derivas.Expression
         private IDvExpr Get(Logarithm log)
         {
             IDvExpr bas = log.Base, of = log.Of;
-            return bas == E ? Natural(of) : Get(Div(Natural(of), Natural(bas)));
+            return bas == DvConsts.E ? Natural(of) : Get(Div(Natural(of), Natural(bas)));
 
             IDvExpr Natural(IDvExpr of) => Mul(Div(1, of), Get(of));
         }
