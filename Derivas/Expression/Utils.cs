@@ -11,8 +11,11 @@ namespace Derivas.Expression
 
     public static partial class DvOps
     {
-        public static IDvExpr E { get; } = new Constant(Math.E);
-        public static IDvExpr PI { get; } = new Constant(Math.PI);
+        public static class DvConsts
+        {
+            public static IDvExpr E { get; } = new Constant(Math.E);
+            public static IDvExpr PI { get; } = new Constant(Math.PI);
+        }
 
         public static DvDict Dict => new DvDict();
     }

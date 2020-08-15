@@ -8,14 +8,14 @@ namespace Derivas.Expression
         public IDvExpr Base { get => Second; set => Second = value; }
 
         public Logarithm(IDvExpr of, IDvExpr bas = null)
-            : base(of, bas ?? DvOps.E, "log", int.MaxValue, Math.Log)
+            : base(of, bas ?? DvOps.DvConsts.E, "log", int.MaxValue, Math.Log)
         { 
         }
         
         #region abstract class implementation
 
         public override string Represent()
-            => Base.Equals(DvOps.E) ? $"log({Of.Represent()})" :
+            => Base.Equals(DvOps.DvConsts.E) ? $"log({Of.Represent()})" :
             $"log({Of.Represent()}, base={Base.Represent()})";
 
         public override Operator CreateInstance(params IDvExpr[] operands)
@@ -37,6 +37,6 @@ namespace Derivas.Expression
     public static partial class DvOps
     {
         public static IDvExpr Log(object of, object bas = null)
-            => new Logarithm(CheckExpr(of), CheckExpr(bas ?? E));
+            => new Logarithm(CheckExpr(of), CheckExpr(bas ?? DvConsts.E));
     }
 }
