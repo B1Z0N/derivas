@@ -199,13 +199,13 @@ var orTheSame = Simpl(expr)
 
 All exceptions are located in `Derivas.Exception` namespace.
 
-* DvBaseException - base exception class for the project
+* `DvBaseException` - base exception class for the project
 
-* DvSymbolMismatchException - symbol value not supplied during calculation
+* `DvSymbolMismatchException` - symbol value not supplied during calculation
 
-* DvDerivativeMimatchException - no derivative rule for this expression
+* `DvDerivativeMimatchException` - no derivative rule for this expression
 
-* DvNotEnoughArguments - wrong number of arguments passed to the operator
+* `DvNotEnoughArguments` - wrong number of arguments passed to the operator
 
 # Utility
 
