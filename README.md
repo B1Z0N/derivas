@@ -20,6 +20,7 @@ P.S. this is just my project to learn some C# basics, so take it easy
     Add(Const(3), Sym("x"), Pow(Const(5), Const(3))
     ```
     And transform it to 
+    
     ```
     Add(3, "x", Pow(5, 3))
     ```
