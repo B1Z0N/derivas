@@ -43,6 +43,10 @@ namespace Derivas.Expression
         public bool IsSameType(IDvExpr to)
             => to is CommutativeAssociativeOperator op && op.Sign == Sign;
 
+
+        /// <summary>
+        /// Transform Caop(1, 2, Caop(1, 2, 3)) to Caop(1, 2, 3, 4)
+        /// </summary>
         private IEnumerable<IDvExpr> FlattenSubOperands(IEnumerable<IDvExpr> operands)
         {
             IEnumerable<IDvExpr> res = new List<IDvExpr>();
@@ -61,14 +65,10 @@ namespace Derivas.Expression
             return res;
         }
 
-
         /// <summary>
         /// Replace some operand/operands with other operands
         /// </summary>
-        /// <param name="replaceOperands"></param>
-        /// <param name="with"></param>
-        /// <returns></returns>
-        public CommutativeAssociativeOperator ReplaceSubOperands(
+        public IDvExpr ReplaceSubOperands(
             IEnumerable<IDvExpr> replaceOperands,
             IEnumerable<IDvExpr> with)
         {
@@ -120,12 +120,25 @@ namespace Derivas.Expression
                 untouched = untouched.Concat(Enumerable.Repeat(operand, counter[operand]));
             }
 
-            return CreateInstance(
+            var instance = CreateInstance(
                 Enumerable.Concat(untouched, replaced).ToArray()
             ) as CommutativeAssociativeOperator;
+
+            return instance.Operands.Count() == 1 ? instance.Operands_[0] : instance;
         }
 
         #endregion subclass functionality
+
+        #region equals related stuff
+
+        public override bool Equals(IDvExpr expr)
+            => expr is CommutativeAssociativeOperator @operator && 
+            Sign == @operator.Sign && new HashSet<IDvExpr>(Operands)
+            .SetEquals(@operator.Operands);
+
+        public override int GetHashCode() => HashCode.Combine(base.GetHashCode(), Sign);
+
+        #endregion
     }
 
     public static partial class DvOps

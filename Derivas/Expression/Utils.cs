@@ -1,7 +1,7 @@
-﻿using Derivas.Expression;
-using System;
+﻿using System;
 using System.Linq;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 using Derivas.Exception;
 
@@ -13,6 +13,24 @@ namespace Derivas.Expression
     {
         public static IDvExpr E { get; } = new Constant(Math.E);
         public static IDvExpr PI { get; } = new Constant(Math.PI);
+
+        public static DvDict Dict => new DvDict();
+    }
+
+    /// <summary>
+    /// Shortcut class to handle dict creation
+    /// </summary>
+    public class DvDict
+    {
+        private Dictionary<string, double> Inner_ = new Dictionary<string, double>();
+        public IDictionary<string, double> Get() => Inner_;
+
+        public DvDict Add(string key, double val)
+        {
+            Inner_.Add(key, val);
+            return this;
+        }
+
     }
 
     internal static class Utils

@@ -131,15 +131,16 @@ namespace Derivas.Simplifier
                 );
             }
 
-            return expr.CreateInstance(res.ToArray());
+            var inst = expr.CreateInstance(res.ToArray()) as CommutativeAssociativeOperator;
+            return inst.Operands.Count() == 1 ? inst.Operands.First() : inst;
         }
     }
 
     internal sealed class PartialSimplifier : BaseSimplifier
     {
-        private Dictionary<string, double> Dict { get; }
+        private IDictionary<string, double> Dict { get; }
 
-        public PartialSimplifier(Dictionary<string, double> dict) => Dict = dict;
+        public PartialSimplifier(IDictionary<string, double> dict) => Dict = dict;
 
         protected override IDvExpr Get(Operator expr)
             => expr.CreateInstance(
@@ -151,11 +152,12 @@ namespace Derivas.Simplifier
             );
     }
 
-    internal class FuncSimplifier : IDvSimplifier
+    internal class FuncSimplifier : BaseSimplifier
     {
         private Func<IDvExpr, IDvExpr> SimplF { get; }
         public FuncSimplifier(Func<IDvExpr, IDvExpr> simplF) => SimplF = simplF;
-        public IDvExpr Simplify(IDvExpr expr) => SimplF(expr);
+        protected override IDvExpr Get(IDvExpr expr) => SimplF(expr);
+        protected override IDvExpr Get(Operator expr) => SimplF(base.Get(expr));
     }
 
     public sealed partial class DvSimplifier
@@ -172,7 +174,7 @@ namespace Derivas.Simplifier
             return this;
         }
 
-        public DvSimplifier ByPartial(Dictionary<string, double> dict)
+        public DvSimplifier ByPartial(IDictionary<string, double> dict)
         {
             InvocationQ.Enqueue(new PartialSimplifier(dict));
             return this;

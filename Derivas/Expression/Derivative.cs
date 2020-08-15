@@ -5,9 +5,9 @@ using static Derivas.Expression.DvOps;
 
 namespace Derivas.Expression
 {
-    public class DvDerivativeMismatch : DvBaseException
+    public class DvDerivativeMismatchException : DvBaseException
     {
-        public DvDerivativeMismatch(Type t, string other = null) : base(
+        public DvDerivativeMismatchException(Type t, string other = null) : base(
             $"There is no DvDerivative handler for type {t}" +
             other == null ? "." : $" and this: '{other}'.")
         {
@@ -36,7 +36,7 @@ namespace Derivas.Expression
                 UnaryOperator uop => Get(uop),
                 BinaryOperator bop => Get(bop),
                 CommutativeAssociativeOperator caop => Get(caop),
-                _ => throw new DvDerivativeMismatch(Original.GetType())
+                _ => throw new DvDerivativeMismatchException(Original.GetType())
             };
 
         private IDvExpr Get(Constant con) => new Constant(0d);
@@ -46,13 +46,10 @@ namespace Derivas.Expression
 
         private IDvExpr Get(Logarithm log)
         {
-            IDvExpr bas = log.Base, pow = log.Of;
-            return Mul(
-                log, Add(
-                    Mul(Get(pow), Log(bas)),
-                    Div(Mul(pow, Get(bas)), bas)
-                )
-            );
+            IDvExpr bas = log.Base, of = log.Of;
+            return bas == E ? Natural(of) : Get(Div(Natural(of), Natural(bas)));
+
+            IDvExpr Natural(IDvExpr of) => Mul(Div(1, of), Get(of));
         }
 
         private IDvExpr Get(UnaryOperator uop)
@@ -71,7 +68,7 @@ namespace Derivas.Expression
                 "sinh" => DerSinh(uop),
                 "tanh" => DerTanh(uop),
                 "cotanh" => DerCotanh(uop),
-                _ => throw new DvDerivativeMismatch(uop.GetType(), $"no such expr name: {uop.Sign}")
+                _ => throw new DvDerivativeMismatchException(uop.GetType(), $"no such expr name: {uop.Sign}")
             };
 
             // -sin(x)
@@ -98,7 +95,6 @@ namespace Derivas.Expression
             IDvExpr DerTanh(UnaryOperator op) => Mul(Div(1, Pow(Cosh(op.Of), 2)), Get(op.Of));
             // -1/sinh^2(x)
             IDvExpr DerCotanh(UnaryOperator op) => Mul(-1, Div(1, Pow(Sinh(op.Of), 2)), Get(op.Of));
-
         }
 
         #region binary operator
@@ -109,7 +105,8 @@ namespace Derivas.Expression
             {
                 "-" => Subtraction(bop),
                 "/" => Division(bop),
-                _ => throw new DvDerivativeMismatch(bop.GetType(), $"no such sign: {bop.Sign}")
+                "^" => Power(bop),
+                _ => throw new DvDerivativeMismatchException(bop.GetType(), $"no such sign: {bop.Sign}")
             };
 
             IDvExpr Subtraction(BinaryOperator op)
@@ -124,6 +121,20 @@ namespace Derivas.Expression
                         Mul(Get(low), up)
                     ), Pow(low, 2));
             }
+
+            IDvExpr Power(BinaryOperator op)
+            {
+                IDvExpr low = op.First, up = op.Second;
+
+                return Mul(
+                    Pow(low, Sub(up, 1)),
+                    Add
+                    (
+                        Mul(Get(up), low, Log(low)),
+                        Mul(up, Get(low))
+                    )
+                );
+            }
         }
 
         #endregion binary operator
@@ -136,7 +147,7 @@ namespace Derivas.Expression
             {
                 "+" => Addition(caop),
                 "*" => Multiplication(caop),
-                _ => throw new DvDerivativeMismatch(caop.GetType(), $"no such sign: {caop.Sign}")
+                _ => throw new DvDerivativeMismatchException(caop.GetType(), $"no such sign: {caop.Sign}")
             };
 
             IDvExpr Addition(CommutativeAssociativeOperator op)

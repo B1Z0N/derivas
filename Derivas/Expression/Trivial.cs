@@ -21,7 +21,7 @@ namespace Derivas.Expression
 
         public Constant(double val) => Val = val;
 
-        public double Calculate(Dictionary<string, double> concrete) => Val;
+        public double Calculate(IDictionary<string, double> concrete) => Val;
 
         public string Represent() => $"{Val}";
 
@@ -41,7 +41,7 @@ namespace Derivas.Expression
 
         public Symbol(string name) => Name = name;
 
-        public double Calculate(Dictionary<string, double> concrete)
+        public double Calculate(IDictionary<string, double> concrete)
             => concrete.ContainsKey(Name) ? concrete[Name]
             : throw new DvSymbolMismatchException(Name);
 
