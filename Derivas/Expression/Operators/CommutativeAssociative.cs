@@ -26,9 +26,9 @@ namespace Derivas.Expression
         public override Func<double[], double> OpFunc { get; }
         public override int Priority { get; }
         public override string Sign { get; }
-        public override IEnumerable<IDvExpr> Operands => Operands_;
+        public override IEnumerable<CloneableExpr> Operands => Operands_;
 
-        public override Operator CreateInstance(params IDvExpr[] operands)
+        protected override CloneableExpr CreateFromClonable(params CloneableExpr[] operands)
             => new CommutativeAssociativeOperator(Sign, Priority, OpFunc,
                 operands.Length != 0 ? operands : Operands.ToArray());
 
@@ -36,25 +36,25 @@ namespace Derivas.Expression
 
         #region subclass functionality
 
-        protected internal List<IDvExpr> Operands_;
+        protected internal List<CloneableExpr> Operands_;
 
         public CommutativeAssociativeOperator(string sign, int prio,
-            Func<double[], double> op, params IDvExpr[] operands)
+            Func<double[], double> op, params CloneableExpr[] operands)
         {
             (Sign, Priority, OpFunc) = (sign, prio, op);
-            Operands_ = new List<IDvExpr>(FlattenSubOperands(operands));
+            Operands_ = new List<CloneableExpr>(FlattenSubOperands(operands));
         }
 
-        public bool IsSameType(IDvExpr to)
+        public bool IsSameType(CloneableExpr to)
             => to is CommutativeAssociativeOperator op && op.Sign == Sign;
 
 
         /// <summary>
         /// Transform Caop(1, 2, Caop(1, 2, 3)) to Caop(1, 2, 3, 4)
         /// </summary>
-        private IEnumerable<IDvExpr> FlattenSubOperands(IEnumerable<IDvExpr> operands)
+        private IEnumerable<CloneableExpr> FlattenSubOperands(IEnumerable<CloneableExpr> operands)
         {
-            IEnumerable<IDvExpr> res = new List<IDvExpr>();
+            IEnumerable<CloneableExpr> res = new List<CloneableExpr>();
             foreach (var operand in operands)
             {
                 if (operand is CommutativeAssociativeOperator op && op.Sign == Sign)
@@ -73,9 +73,9 @@ namespace Derivas.Expression
         /// <summary>
         /// Replace some operand/operands with other operands
         /// </summary>
-        public IDvExpr ReplaceSubOperands(
-            IEnumerable<IDvExpr> replaceOperands,
-            IEnumerable<IDvExpr> with)
+        public CloneableExpr ReplaceSubOperands(
+            IEnumerable<CloneableExpr> replaceOperands,
+            IEnumerable<CloneableExpr> with)
         {
             if (replaceOperands.Count() == 0)
             {
@@ -86,7 +86,7 @@ namespace Derivas.Expression
             {
                 var replace = replaceOperands.First();
 
-                IEnumerable<IDvExpr> res = new List<IDvExpr>();
+                IEnumerable<CloneableExpr> res = new List<CloneableExpr>();
                 foreach (var operand in Operands)
                 {
                     if (replace.Equals(operand))
@@ -102,7 +102,7 @@ namespace Derivas.Expression
                 return CreateInstance(res.ToArray()) as CommutativeAssociativeOperator;
             }
 
-            var counter = new Dictionary<IDvExpr, int>();
+            var counter = new Dictionary<CloneableExpr, int>();
             foreach (var operand in Operands)
             {
                 if (counter.ContainsKey(operand)) counter[operand] += 1;
@@ -116,9 +116,9 @@ namespace Derivas.Expression
                 replaceCount = Math.Min(replaceCount, counter[operand]);
             }
 
-            IEnumerable<IDvExpr>
+            IEnumerable<CloneableExpr>
                 replaced = Enumerable.Repeat(with, replaceCount).SelectMany(x => x),
-                untouched = new List<IDvExpr>(Operands.Except(replaceOperands));
+                untouched = new List<CloneableExpr>(Operands.Except(replaceOperands));
             foreach (var operand in replaceOperands)
             {
                 counter[operand] -= replaceCount;
@@ -156,7 +156,7 @@ namespace Derivas.Expression
         private static Func<double[], double> Multiplication =
             args => args.Aggregate(1d, (fst, snd) => fst * snd);
 
-        private static IDvExpr CheckForLessThanTwo(Func<IDvExpr[], IDvExpr> createF, params IDvExpr[] args)
+        private static IDvExpr CheckForLessThanTwo(Func<CloneableExpr[], CloneableExpr> createF, params CloneableExpr[] args)
             => args.Count() < 2 ? throw new DvNotEnoughArgumentsException(2) : createF(args);
 
         #endregion helpers

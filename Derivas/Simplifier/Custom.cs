@@ -7,10 +7,10 @@ namespace Derivas.Simplifier
 {
     internal sealed class CustomSimplifier : BaseSimplifier
     {
-        public IDvExpr From { get; }
-        public IDvExpr To { get; }
+        public CloneableExpr From { get; }
+        public CloneableExpr To { get; }
 
-        public CustomSimplifier(IDvExpr from, IDvExpr to)
+        public CustomSimplifier(CloneableExpr from, CloneableExpr to)
         {
             (From, To) = (from, to);
         }
@@ -29,7 +29,8 @@ namespace Derivas.Simplifier
         protected override IDvExpr Get(CommutativeAssociativeOperator expr)
         {
             expr = base.Get(expr) as CommutativeAssociativeOperator;
-            Func<IDvExpr, IEnumerable<IDvExpr>> lst = el => new List<IDvExpr>() { el };
+            Func<CloneableExpr, IEnumerable<CloneableExpr>> lst = 
+                el => new List<CloneableExpr>() { el };
 
             return From is CommutativeAssociativeOperator from && from.Sign == expr.Sign ?
                 expr.ReplaceSubOperands(from.Operands, lst(To)) :

@@ -18,7 +18,7 @@ namespace Derivas.Simplifier
 
         protected override IDvExpr Get(OrderedOperator expr)
         {
-            var op = expr.CreateInstance(expr.Operands.Select(Simplify).ToArray());
+            var op = expr.CreateInstance(expr.Operands.Select(Simplify).ToArray()) as OrderedOperator;
 
             if (op.Operands.All(el => el is Constant))
             {

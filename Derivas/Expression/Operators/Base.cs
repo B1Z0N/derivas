@@ -11,28 +11,27 @@ namespace Derivas.Expression
     /// Abstract class to define functionality and interface(in broader sense)
     /// to all nongeneric Operator functionality
     /// </summary>
-    internal abstract class Operator : IDvExpr
+    internal abstract class Operator : CloneableExpr
     {
         #region abstract members specific to any operator
 
         public abstract string Sign { get; }
         public abstract int Priority { get; }
         public abstract Func<double[], double> OpFunc { get; }
-        public abstract Operator CreateInstance(params IDvExpr[] operands);
-        public abstract IEnumerable<IDvExpr> Operands { get; }
+        public abstract IEnumerable<CloneableExpr> Operands { get; }
 
         #endregion abstract members specific to any operator
 
         #region IDvExpr interface implementation
 
-        public virtual double Calculate(IDictionary<string, double> concrete)
+        public override double Calculate(IDictionary<string, double> concrete)
             => OpFunc(
                 Operands.Select(
                     el => el.Calculate(concrete)
                 ).ToArray()
             );
 
-        public virtual string Represent()
+        public override string Represent()
         {
             var withPars = new List<string>();
             foreach (var el in Operands)
@@ -50,7 +49,7 @@ namespace Derivas.Expression
 
         #region equals related stuff
 
-        public virtual bool Equals(IDvExpr other)
+        public override bool Equals(IDvExpr other)
         {
             var op = other as Operator;
             return op != null && GetType() == other.GetType() && Sign == op.Sign &&

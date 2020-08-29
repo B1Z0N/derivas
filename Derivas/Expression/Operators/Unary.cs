@@ -4,17 +4,17 @@ namespace Derivas.Expression
 {
     internal class UnaryOperator : OrderedOperator
     {
-        public IDvExpr Of { get => Operands_[0]; set => Operands_[0] = value; }
+        public CloneableExpr Of { get => Operands_[0]; set => Operands_[0] = value; }
         protected Func<double, double> UnFunc { get; }
 
-        public UnaryOperator(IDvExpr of, string name, Func<double, double> op)
+        public UnaryOperator(CloneableExpr of, string name, Func<double, double> op)
             : base(of) => (Sign, UnFunc) = (name, op);
 
         #region abstract class implementation
 
         public override string Represent() => $"{Sign}({Of.Represent()})";
 
-        public override Operator CreateInstance(params IDvExpr[] operands)
+        protected override CloneableExpr CreateFromClonable(params CloneableExpr[] operands)
             => new UnaryOperator(operands.Length != 0 ? operands[0] : Of, Sign, UnFunc); 
 
         public override string Sign { get; }
