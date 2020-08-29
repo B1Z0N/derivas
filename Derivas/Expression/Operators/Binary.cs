@@ -39,11 +39,12 @@ namespace Derivas.Expression
         {
             if (operands.Length < 2)
             {
-                return new BinaryOperator(First, Second, Sign, Priority, BinFunc);
+                return new BinaryOperator(
+                    First.CreateInstance(), Second.CreateInstance(), Sign, Priority, BinFunc);
             }
             else
             {
-                return new BinaryOperator(operands[0], operands[1], Sign, Priority, BinFunc);
+                return new BinaryOperator(operands[0].CreateInstance(), operands[1].CreateInstance(), Sign, Priority, BinFunc);
             }
         }
     }

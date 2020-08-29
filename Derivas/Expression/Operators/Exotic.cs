@@ -22,11 +22,11 @@ namespace Derivas.Expression
         {
             if (operands.Length < 2)
             {
-                return new Logarithm(Of, Base);
+                return new Logarithm(Of.CreateInstance(), Base.CreateInstance());
             }
             else
             {
-                return new Logarithm(operands[0], operands[1]);
+                return new Logarithm(operands[0].CreateInstance(), operands[1].CreateInstance());
             }
         }
        

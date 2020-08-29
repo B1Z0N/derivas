@@ -29,8 +29,13 @@ namespace Derivas.Expression
         public override IEnumerable<CloneableExpr> Operands => Operands_;
 
         protected override CloneableExpr CreateFromClonable(params CloneableExpr[] operands)
-            => new CommutativeAssociativeOperator(Sign, Priority, OpFunc,
-                operands.Length != 0 ? operands : Operands.ToArray());
+        {
+            var resultingOperands = operands.Length != 0 ? operands : Operands;
+            resultingOperands = resultingOperands.Select(op => op.CreateInstance());
+            return new CommutativeAssociativeOperator(
+                Sign, Priority, OpFunc, resultingOperands.ToArray()
+            );
+        }
 
         #endregion abstract class implementation
 

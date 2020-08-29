@@ -4,8 +4,7 @@ using static Derivas.Expression.DvOps;
 
 namespace Derivas.Expression.Tests
 {
-    [TestFixture]
-    public class OperatorsBaseTests : BaseTests
+    public class OperatorsTestUtility : TestUtility
     {
     }
 }

@@ -7,7 +7,7 @@ using static Derivas.Expression.DvOps;
 namespace Derivas.Expression.Tests
 {
     [TestFixture]
-    public class ExoticOperatorTests : OperatorsBaseTests
+    public class ExoticOperatorTests : OperatorsTestUtility
     {
         [Test()]
         public void TestLog()

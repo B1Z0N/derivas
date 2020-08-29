@@ -15,7 +15,10 @@ namespace Derivas.Expression
         public override string Represent() => $"{Sign}({Of.Represent()})";
 
         protected override CloneableExpr CreateFromClonable(params CloneableExpr[] operands)
-            => new UnaryOperator(operands.Length != 0 ? operands[0] : Of, Sign, UnFunc); 
+        {
+            var unOp = (operands.Length != 0 ? operands[0] : Of).CreateInstance();
+            return new UnaryOperator(unOp, Sign, UnFunc);
+        }
 
         public override string Sign { get; }
         public override int Priority { get; } = int.MaxValue;

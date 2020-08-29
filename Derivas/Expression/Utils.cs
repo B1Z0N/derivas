@@ -62,7 +62,7 @@ namespace Derivas.Expression
                 {
                     string name => new Symbol(name),
                     CloneableExpr clexpression => clexpression,
-                    IDvExpr expression => new CloneableExpr.ClonableWrapper(expression),
+                    IDvExpr expression => new CloneableExpr.Wrapper(expression),
                     _ => throw new DvExpressionMismatchException(expr.GetType())
                 };
             }

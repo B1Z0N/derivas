@@ -50,7 +50,7 @@ namespace Derivas.Expression
         /// <summary>Ensure that all IDvExpr is IClonable</summary>
         public CloneableExpr CreateInstance(params IDvExpr[] exprs)
             => CreateFromClonable(exprs.Select(
-                expr => expr is CloneableExpr clexpr ? clexpr : new ClonableWrapper(expr)
+                expr => expr is CloneableExpr clexpr ? clexpr : new Wrapper(expr)
             ).ToArray());
 
         #region IDvExpr abstract implementation
@@ -66,11 +66,11 @@ namespace Derivas.Expression
         /// <summary>
         /// Class to wrap all "uselses" userspace IDvExpr in IClonableExpr
         /// </summary>
-        public class ClonableWrapper : CloneableExpr
+        public class Wrapper : CloneableExpr
         {
             public IDvExpr Inner { get; }
 
-            public ClonableWrapper(IDvExpr inner) => Inner = inner;
+            public Wrapper(IDvExpr inner) => Inner = inner;
 
             public override double Calculate(IDictionary<string, double> concrete) => Inner.Calculate(concrete);
 
@@ -81,7 +81,7 @@ namespace Derivas.Expression
             public override int GetHashCode() => Inner.GetHashCode();
 
             protected override CloneableExpr CreateFromClonable(params CloneableExpr[] expr)
-                => new ClonableWrapper(Inner);
+                => new Wrapper(Inner);
         }
     }
 
