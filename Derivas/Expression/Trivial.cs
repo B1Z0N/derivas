@@ -18,46 +18,48 @@ namespace Derivas.Exception
 
 namespace Derivas.Expression
 {
-    internal class Constant : IDvExpr
+    internal class Constant : CloneableExpr
     {
         public double Val { get; }
 
         public Constant(double val) => Val = val;
 
-        public double Calculate(IDictionary<string, double> concrete) => Val;
+        public override double Calculate(IDictionary<string, double> concrete) => Val;
 
-        public string Represent() => $"{Val}";
+        public override string Represent() => $"{Val}";
 
         public override bool Equals(object obj) => Equals(obj as IDvExpr);
 
-        public bool Equals(IDvExpr other)
+        public override bool Equals(IDvExpr other)
             => (other as Constant)?.Val == Val;
 
         public override int GetHashCode() => HashCode.Combine(Val, GetType());
 
-        public IDvExpr Clone() => new Constant(Val);
+        protected override CloneableExpr CreateFromClonable(params CloneableExpr[] expr)
+            => expr.Length == 0 ? new Constant(Val) : expr[0].CreateInstance();
     }
 
-    internal class Symbol : IDvExpr
+    internal class Symbol : CloneableExpr
     {
         public string Name { get; }
 
         public Symbol(string name) => Name = name;
 
-        public double Calculate(IDictionary<string, double> concrete)
+        public override double Calculate(IDictionary<string, double> concrete)
             => concrete.ContainsKey(Name) ? concrete[Name]
             : throw new DvSymbolMismatchException(Name);
 
-        public string Represent() => Name;
+        public override string Represent() => Name;
 
         public override bool Equals(object obj) => Equals(obj as IDvExpr);
 
-        public bool Equals(IDvExpr other)
+        public override bool Equals(IDvExpr other)
             => (other as Symbol)?.Name == Name;
 
         public override int GetHashCode() => HashCode.Combine(Name, GetType());
 
-        public IDvExpr Clone() => new Symbol(Name);
+        protected override CloneableExpr CreateFromClonable(params CloneableExpr[] expr)
+            => expr.Length == 0 ? new Symbol(Name) : expr[0].CreateInstance();
     }
 
     public static partial class DvOps

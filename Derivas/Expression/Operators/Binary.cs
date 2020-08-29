@@ -7,13 +7,13 @@ namespace Derivas.Expression
     /// </summary>
     internal class BinaryOperator : OrderedOperator
     {
-        public IDvExpr First
+        public CloneableExpr First
         {
             get => Operands_[0];
             protected set => Operands_[0] = value;
         }
 
-        public IDvExpr Second
+        public CloneableExpr Second
         {
             get => Operands_[1];
             protected set => Operands_[1] = value;
@@ -22,7 +22,7 @@ namespace Derivas.Expression
         private Func<double, double, double> BinFunc { get; }
 
         public BinaryOperator(
-             IDvExpr fst, IDvExpr snd, string sign, int prio,
+             CloneableExpr fst, CloneableExpr snd, string sign, int prio,
             Func<double, double, double> op)
             :base(fst, snd)
         {
@@ -35,15 +35,16 @@ namespace Derivas.Expression
         public override int Priority { get; }
         public override string Sign { get; }
 
-        public override Operator CreateInstance(params IDvExpr[] operands)
+        protected override CloneableExpr CreateFromClonable(params CloneableExpr[] operands)
         {
             if (operands.Length < 2)
             {
-                return new BinaryOperator(First, Second, Sign, Priority, BinFunc);
+                return new BinaryOperator(
+                    First.CreateInstance(), Second.CreateInstance(), Sign, Priority, BinFunc);
             }
             else
             {
-                return new BinaryOperator(operands[0], operands[1], Sign, Priority, BinFunc);
+                return new BinaryOperator(operands[0].CreateInstance(), operands[1].CreateInstance(), Sign, Priority, BinFunc);
             }
         }
     }

@@ -7,7 +7,7 @@ using static Derivas.Expression.DvOps;
 namespace Derivas.Expression.Tests
 {
     [TestFixture]
-    public class DerivativeTests : BaseTests
+    public class DerivativeTests : TestUtility
     {
         [Test()]
         public void TestConstant()

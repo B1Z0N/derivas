@@ -9,7 +9,7 @@ using System.Globalization;
 namespace Derivas.Expression.Tests
 {
     [TestFixture]
-    public class UtilsTests : BaseTests
+    public class UtilsTests : TestUtility
     {
         [Test()]
         public void TestConstants()

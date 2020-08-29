@@ -4,11 +4,11 @@ namespace Derivas.Expression
 {
     internal class Logarithm : BinaryOperator
     {
-        public IDvExpr Of { get => First; set => First = value; } 
-        public IDvExpr Base { get => Second; set => Second = value; }
+        public CloneableExpr Of { get => First; set => First = value; } 
+        public CloneableExpr Base { get => Second; set => Second = value; }
 
-        public Logarithm(IDvExpr of, IDvExpr bas = null)
-            : base(of, bas ?? DvOps.DvConsts.E, "log", int.MaxValue, Math.Log)
+        public Logarithm(CloneableExpr of, CloneableExpr bas = null)
+            : base(of, bas ?? DvOps.DvConsts.CL_E, "log", int.MaxValue, Math.Log)
         { 
         }
         
@@ -18,15 +18,15 @@ namespace Derivas.Expression
             => Base.Equals(DvOps.DvConsts.E) ? $"log({Of.Represent()})" :
             $"log({Of.Represent()}, base={Base.Represent()})";
 
-        public override Operator CreateInstance(params IDvExpr[] operands)
+        protected override CloneableExpr CreateFromClonable(params CloneableExpr[] operands)
         {
             if (operands.Length < 2)
             {
-                return new Logarithm(Of, Base);
+                return new Logarithm(Of.CreateInstance(), Base.CreateInstance());
             }
             else
             {
-                return new Logarithm(operands[0], operands[1]);
+                return new Logarithm(operands[0].CreateInstance(), operands[1].CreateInstance());
             }
         }
        
