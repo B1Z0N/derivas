@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Derivas.Expression;
+using System;
 
 namespace Derivas.Exception
 {
@@ -33,11 +34,11 @@ namespace Derivas.Exception
     {
         public Type WrongType;
         public string Other;
-        public DvDerivativeMismatchException(Type t, string other = null) : base(
-            $"There is no DvDerivative handler for type {t}" +
+        public DvDerivativeMismatchException(IDvExpr op, string other = null) : base(
+            $"There is no DvDerivative handler for type {op.GetType()}" +
             other == null ? "." : $" and this: '{other}'.")
         {
-            (WrongType, Other) = (t, other);
+            (WrongType, Other) = (op.GetType(), other);
         }
     }
 

@@ -25,7 +25,7 @@ namespace Derivas.Expression
                 UnaryOperator uop => Get(uop),
                 BinaryOperator bop => Get(bop),
                 CommutativeAssociativeOperator caop => Get(caop),
-                _ => throw new DvDerivativeMismatchException(Original.GetType())
+                _ => throw new DvDerivativeMismatchException(Original)
             };
 
         private IDvExpr Get(Constant con) => new Constant(0d);
@@ -57,7 +57,7 @@ namespace Derivas.Expression
                 DvOpSigns.sinh => DerSinh(uop),
                 DvOpSigns.tanh => DerTanh(uop),
                 DvOpSigns.cotanh => DerCotanh(uop),
-                _ => throw new DvDerivativeMismatchException(uop.GetType(), $"no such expr name: {uop.Sign}")
+                _ => throw new DvDerivativeMismatchException(uop, $"no such expr name: {uop.Sign}")
             };
 
             // -sin(x)
@@ -95,7 +95,7 @@ namespace Derivas.Expression
                 DvOpSigns.sub => Subtraction(bop),
                 DvOpSigns.div => Division(bop),
                 DvOpSigns.pow => Power(bop),
-                _ => throw new DvDerivativeMismatchException(bop.GetType(), $"no such sign: {bop.Sign}")
+                _ => throw new DvDerivativeMismatchException(bop, $"no such sign: {bop.Sign}")
             };
 
             IDvExpr Subtraction(BinaryOperator op)
@@ -136,7 +136,7 @@ namespace Derivas.Expression
             {
                 DvOpSigns.add => Addition(caop),
                 DvOpSigns.mul => Multiplication(caop),
-                _ => throw new DvDerivativeMismatchException(caop.GetType(), $"no such sign: {caop.Sign}")
+                _ => throw new DvDerivativeMismatchException(caop, $"no such sign: {caop.Sign}")
             };
 
             IDvExpr Addition(CommutativeAssociativeOperator op)
