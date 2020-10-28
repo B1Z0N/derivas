@@ -1,4 +1,3 @@
-using Derivas.Exception;
 using NUnit.Framework;
 using System.Collections.Generic;
 
