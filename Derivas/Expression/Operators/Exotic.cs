@@ -33,10 +33,4 @@ namespace Derivas.Expression
         #endregion abstract class implementation
 
     }
-
-    public static partial class DvOps
-    {
-        public static IDvExpr Log(object of, object bas = null)
-            => new Logarithm(CheckExpr(of), CheckExpr(bas ?? DvConsts.E));
-    }
 }

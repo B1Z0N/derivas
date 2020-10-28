@@ -1,10 +1,11 @@
 ﻿using Derivas.Exception;
 using System;
 using System.Linq;
-using static Derivas.Expression.DvOps;
 
 namespace Derivas.Expression
 {
+    using static DvOps;
+
     internal class Derivative
     {
         public IDvExpr Original { get; }
@@ -157,17 +158,5 @@ namespace Derivas.Expression
         }
 
         #endregion commutative associative operator
-    }
-
-    public static partial class DvOps
-    {
-        public static IDvExpr Der(object expr, object by)
-        {
-            var symBy = CheckExpr(by) as Symbol ??
-                throw new ArgumentOutOfRangeException(
-                    $"Should be one of 'string' or 'Symbol', got {by.GetType()}"
-                );
-            return new Derivative(CheckExpr(expr), symBy).Get();
-        }
     }
 }

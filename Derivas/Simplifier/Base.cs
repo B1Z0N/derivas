@@ -65,11 +65,3 @@ namespace Derivas.Simplifier
 
     }
 }
-
-namespace Derivas.Expression
-{
-    public static partial class DvOps
-    {
-        public static DvSimplifier Simpl(IDvExpr expr) => DvSimplifier.Create(expr);
-    }
-}

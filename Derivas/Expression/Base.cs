@@ -67,16 +67,4 @@ namespace Derivas.Expression
                 => new Wrapper(Inner);
         }
     }
-
-    public static partial class DvOps
-    {
-        /// <summary>
-        /// Shortcut handlers, transforms numeric -> Const, string -> Symbol, IDvExpr -> IDvExpr
-        /// and throws on others
-        /// </summary>
-        private static CloneableExpr CheckExpr(object arg) => Utils.CheckExpr(arg);
-
-        /// <summary>Same as single arg function</summary>
-        private static CloneableExpr[] CheckExpr(object[] args) => Utils.CheckExpr(args);
-    }
 }

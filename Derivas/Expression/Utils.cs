@@ -6,26 +6,6 @@ using Derivas.Exception;
 
 namespace Derivas.Expression
 {
-    // Some common mathemtaical constants
-
-    public static partial class DvOps
-    {
-        /// <summary>
-        /// Common mathematical constants.
-        /// Prepended with CL are Cloneable - only for internal use.
-        /// </summary>
-        public static class DvConsts
-        {
-            public static IDvExpr E { get; } = new Constant(Math.E);
-            public static IDvExpr PI { get; } = new Constant(Math.PI);
-
-            internal static CloneableExpr CL_E { get; } = new Constant(Math.E);
-            internal static CloneableExpr CL_PI { get; } = new Constant(Math.PI);
-        }
-
-        public static DvDict Dict => new DvDict();
-    }
-
     /// <summary>
     /// Shortcut class to handle dict creation
     /// </summary>

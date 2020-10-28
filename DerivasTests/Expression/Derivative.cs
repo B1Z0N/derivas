@@ -2,10 +2,13 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using static Derivas.Expression.DvOps;
+using Derivas.Expression;
+using Derivas.Exception;
 
 namespace Derivas.Expression.Tests
 {
+    using static DvOps;
+
     [TestFixture]
     public class DerivativeTests : TestUtility
     {

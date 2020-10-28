@@ -2,10 +2,11 @@ using Derivas.Exception;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using static Derivas.Expression.DvOps;
 
 namespace Derivas.Expression.Tests
 {
+    using static DvOps;
+
     [TestFixture]
     public class UnaryOperatorTests : OperatorsTestUtility
     {

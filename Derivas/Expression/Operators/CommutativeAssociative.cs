@@ -136,36 +136,4 @@ namespace Derivas.Expression
 
         #endregion
     }
-
-    public static partial class DvOps
-    {
-        #region helpers
-
-        private static Func<double[], double> Addition =
-            args => args.Aggregate(0d, (fst, snd) => fst + snd);
-
-        private static Func<double[], double> Multiplication =
-            args => args.Aggregate(1d, (fst, snd) => fst * snd);
-
-        private static IDvExpr CheckForLessThanTwo(Func<CloneableExpr[], CloneableExpr> createF, params CloneableExpr[] args)
-            => args.Count() < 2 ? throw new DvNotEnoughArgumentsException(2) : createF(args);
-
-        #endregion helpers
-
-        #region userspace methods
-
-        public static IDvExpr Add(params object[] args)
-            => CheckForLessThanTwo(
-                ops => new CommutativeAssociativeOperator("+", 0, Addition, ops),
-                CheckExpr(args)
-            );
-
-        public static IDvExpr Mul(params object[] args)
-            => CheckForLessThanTwo(
-                ops => new CommutativeAssociativeOperator("*", 1, Multiplication, ops),
-                CheckExpr(args)
-            );
-
-        #endregion userspace methods
-    }
 }
