@@ -10,21 +10,21 @@ namespace Derivas
     public static class DvOps
     {
         # region binary operators
-        public static IDvExpr Div(object fst, object snd)
-            => new BinaryOperator(CheckExpr(fst), CheckExpr(snd), "/", 1, (fst, snd) => fst / snd);
+        public static IDvExpr Div(object first, object second)
+            => new BinaryOperator(CheckExpr(first), CheckExpr(second), DvOpSigns.div, 1, (first, second) => first / second);
 
-        public static IDvExpr Sub(object fst, object snd)
-            => new BinaryOperator(CheckExpr(fst), CheckExpr(snd), "-", 0, (fst, snd) => fst - snd);
+        public static IDvExpr Sub(object first, object second)
+            => new BinaryOperator(CheckExpr(first), CheckExpr(second), DvOpSigns.sub, 0, (first, second) => first - second);
 
         public static IDvExpr Pow(object bas, object pow) => new BinaryOperator(
-            CheckExpr(bas), CheckExpr(pow), "^", 2, (bas, pow) => Math.Pow(bas, pow)
+            CheckExpr(bas), CheckExpr(pow), DvOpSigns.pow, 2, (bas, pow) => Math.Pow(bas, pow)
         );
 
         private static Func<double[], double> Addition =
-            args => args.Aggregate(0d, (fst, snd) => fst + snd);
+            args => args.Aggregate(0d, (first, second) => first + second);
 
         private static Func<double[], double> Multiplication =
-            args => args.Aggregate(1d, (fst, snd) => fst * snd);
+            args => args.Aggregate(1d, (first, second) => first * second);
 
         #endregion
 
@@ -35,13 +35,13 @@ namespace Derivas
 
         public static IDvExpr Add(params object[] args)
             => CheckForLessThanTwo(
-                ops => new CommutativeAssociativeOperator("+", 0, Addition, ops),
+                ops => new CommutativeAssociativeOperator(DvOpSigns.add, 0, Addition, ops),
                 CheckExpr(args)
             );
 
         public static IDvExpr Mul(params object[] args)
             => CheckForLessThanTwo(
-                ops => new CommutativeAssociativeOperator("*", 1, Multiplication, ops),
+                ops => new CommutativeAssociativeOperator(DvOpSigns.mul, 1, Multiplication, ops),
                 CheckExpr(args)
             );
 
@@ -53,40 +53,40 @@ namespace Derivas
             => new Logarithm(CheckExpr(of), CheckExpr(bas ?? DvConsts.E));
 
         public static IDvExpr Cos(object of)
-            => new UnaryOperator(CheckExpr(of), "cos", Math.Cos);
+            => new UnaryOperator(CheckExpr(of), DvOpSigns.cos, Math.Cos);
 
         public static IDvExpr Sin(object of)
-            => new UnaryOperator(CheckExpr(of), "sin", Math.Sin);
+            => new UnaryOperator(CheckExpr(of), DvOpSigns.sin, Math.Sin);
 
         public static IDvExpr Tan(object of)
-            => new UnaryOperator(CheckExpr(of), "tan", Math.Tan);
+            => new UnaryOperator(CheckExpr(of), DvOpSigns.tan, Math.Tan);
 
         public static IDvExpr Cotan(object of)
-            => new UnaryOperator(CheckExpr(of), "cotan", of => 1 / Math.Tan(of));
+            => new UnaryOperator(CheckExpr(of), DvOpSigns.cotan, of => 1 / Math.Tan(of));
 
         public static IDvExpr Acos(object of)
-            => new UnaryOperator(CheckExpr(of), "arccos", Math.Acos);
+            => new UnaryOperator(CheckExpr(of), DvOpSigns.acos, Math.Acos);
 
         public static IDvExpr Asin(object of)
-            => new UnaryOperator(CheckExpr(of), "arcsin", Math.Asin);
+            => new UnaryOperator(CheckExpr(of), DvOpSigns.asin, Math.Asin);
 
         public static IDvExpr Atan(object of)
-            => new UnaryOperator(CheckExpr(of), "arctan", Math.Atan);
+            => new UnaryOperator(CheckExpr(of), DvOpSigns.atan, Math.Atan);
 
         public static IDvExpr Acotan(object of)
-            => new UnaryOperator(CheckExpr(of), "arccotan", of => Math.PI / 2 - Math.Atan(of));
+            => new UnaryOperator(CheckExpr(of), DvOpSigns.acotan, of => Math.PI / 2 - Math.Atan(of));
 
         public static IDvExpr Cosh(object of)
-            => new UnaryOperator(CheckExpr(of), "cosh", Math.Cosh);
+            => new UnaryOperator(CheckExpr(of), DvOpSigns.cosh, Math.Cosh);
 
         public static IDvExpr Sinh(object of)
-            => new UnaryOperator(CheckExpr(of), "sinh", Math.Sinh);
+            => new UnaryOperator(CheckExpr(of), DvOpSigns.sinh, Math.Sinh);
 
         public static IDvExpr Tanh(object of)
-            => new UnaryOperator(CheckExpr(of), "tanh", Math.Tanh);
+            => new UnaryOperator(CheckExpr(of), DvOpSigns.tanh, Math.Tanh);
 
         public static IDvExpr Cotanh(object of)
-            => new UnaryOperator(CheckExpr(of), "cotanh", of => 1 / Math.Tanh(of));
+            => new UnaryOperator(CheckExpr(of), DvOpSigns.cotanh, of => 1 / Math.Tanh(of));
 
         #endregion
        
@@ -134,4 +134,30 @@ namespace Derivas
         
         #endregion
     }
+
+
+    /// <summary>Class with common naming constants</summary>
+    internal static class DvOpSigns
+    {
+        public const string add = "+";
+        public const string mul = "*";
+        public const string div = "/";
+        public const string sub = "-";
+        public const string pow = "^";
+        public const string log = "log";
+        public const string cos = "cos";
+        public const string sin = "sin";
+        public const string tan = "tan";
+        public const string cotan = "cotan";
+        public const string acos = "acos";
+        public const string asin = "asin";
+        public const string atan = "atan";
+        public const string acotan = "acotan";
+        public const string cosh = "cosh";
+        public const string sinh = "sinh";
+        public const string tanh = "tanh";
+        public const string cotanh = "cotanh";
+    }
+
+
 }

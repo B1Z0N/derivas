@@ -22,9 +22,9 @@ namespace Derivas.Expression
         private Func<double, double, double> BinFunc { get; }
 
         public BinaryOperator(
-             CloneableExpr fst, CloneableExpr snd, string sign, int prio,
+             CloneableExpr first, CloneableExpr second, string sign, int prio,
             Func<double, double, double> op)
-            :base(fst, snd)
+            :base(first, second)
         {
             (Sign, Priority) = (sign, prio);
             OpFunc = (double[] args) => op(args[0], args[1]);

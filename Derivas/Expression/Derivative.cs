@@ -45,18 +45,18 @@ namespace Derivas.Expression
         {
             return uop.Sign switch
             {
-                "cos" => DerCos(uop),
-                "sin" => DerSin(uop),
-                "tan" => DerTan(uop),
-                "cotan" => DerCotan(uop),
-                "arccos" => DerAcos(uop),
-                "arcsin" => DerAsin(uop),
-                "arctan" => DerAtan(uop),
-                "arccotan" => DerAcotan(uop),
-                "cosh" => DerCosh(uop),
-                "sinh" => DerSinh(uop),
-                "tanh" => DerTanh(uop),
-                "cotanh" => DerCotanh(uop),
+                DvOpSigns.cos => DerCos(uop),
+                DvOpSigns.sin => DerSin(uop),
+                DvOpSigns.tan => DerTan(uop),
+                DvOpSigns.cotan => DerCotan(uop),
+                DvOpSigns.acos => DerAcos(uop),
+                DvOpSigns.asin => DerAsin(uop),
+                DvOpSigns.atan => DerAtan(uop),
+                DvOpSigns.acotan => DerAcotan(uop),
+                DvOpSigns.cosh => DerCosh(uop),
+                DvOpSigns.sinh => DerSinh(uop),
+                DvOpSigns.tanh => DerTanh(uop),
+                DvOpSigns.cotanh => DerCotanh(uop),
                 _ => throw new DvDerivativeMismatchException(uop.GetType(), $"no such expr name: {uop.Sign}")
             };
 
@@ -92,9 +92,9 @@ namespace Derivas.Expression
         {
             return bop.Sign switch
             {
-                "-" => Subtraction(bop),
-                "/" => Division(bop),
-                "^" => Power(bop),
+                DvOpSigns.sub => Subtraction(bop),
+                DvOpSigns.div => Division(bop),
+                DvOpSigns.pow => Power(bop),
                 _ => throw new DvDerivativeMismatchException(bop.GetType(), $"no such sign: {bop.Sign}")
             };
 
@@ -134,8 +134,8 @@ namespace Derivas.Expression
         {
             return caop.Sign switch
             {
-                "+" => Addition(caop),
-                "*" => Multiplication(caop),
+                DvOpSigns.add => Addition(caop),
+                DvOpSigns.mul => Multiplication(caop),
                 _ => throw new DvDerivativeMismatchException(caop.GetType(), $"no such sign: {caop.Sign}")
             };
 
@@ -144,16 +144,16 @@ namespace Derivas.Expression
 
             IDvExpr Multiplication(CommutativeAssociativeOperator op)
             {
-                var fst = op.Operands.ElementAt(0);
+                var first = op.Operands.ElementAt(0);
                 if (op.Operands.Count() == 2)
                 {
-                    var snd = op.Operands.ElementAt(1);
+                    var second = op.Operands.ElementAt(1);
 
-                    return Add(Mul(Get(fst), snd), Mul(Get(snd), fst));
+                    return Add(Mul(Get(first), second), Mul(Get(second), first));
                 }
 
                 var other = op.CreateInstance(op.Operands.Skip(1).ToArray());
-                return Add(Mul(Get(fst), other), Mul(Get(other), fst));
+                return Add(Mul(Get(first), other), Mul(Get(other), first));
             }
         }
 

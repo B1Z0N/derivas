@@ -66,7 +66,7 @@ namespace Derivas.Simplifier
                 expr = expr.CreateInstance(newOps.ToArray()) as CommutativeAssociativeOperator;
                 return expr.Sign switch
                 {
-                    "*" => Mul(expr),
+                    DvOpSigns.add => Mul(expr),
                     _ => expr
                 };
             }
