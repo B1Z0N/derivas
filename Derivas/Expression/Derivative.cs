@@ -1,28 +1,10 @@
 ﻿using Derivas.Exception;
-using System;
 using System.Linq;
-using static Derivas.Expression.DvOps;
 
 namespace Derivas.Expression
 {
-    /// <summary>
-    /// No derivative rule for this expression
-    /// </summary>
-    public class DvDerivativeMismatchException : DvBaseException
-    {
-        public Type WrongType;
-        public string Other;
-        public DvDerivativeMismatchException(Type t, string other = null) : base(
-            $"There is no DvDerivative handler for type {t}" +
-            other == null ? "." : $" and this: '{other}'.")
-        {
-            (WrongType, Other) = (t, other);
-        }
-    }
-}
+    using static DvOps;
 
-namespace Derivas.Expression
-{
     internal class Derivative
     {
         public IDvExpr Original { get; }
@@ -42,7 +24,7 @@ namespace Derivas.Expression
                 UnaryOperator uop => Get(uop),
                 BinaryOperator bop => Get(bop),
                 CommutativeAssociativeOperator caop => Get(caop),
-                _ => throw new DvDerivativeMismatchException(Original.GetType())
+                _ => throw new DvDerivativeMismatchException(Original)
             };
 
         private IDvExpr Get(Constant con) => new Constant(0d);
@@ -62,19 +44,19 @@ namespace Derivas.Expression
         {
             return uop.Sign switch
             {
-                "cos" => DerCos(uop),
-                "sin" => DerSin(uop),
-                "tan" => DerTan(uop),
-                "cotan" => DerCotan(uop),
-                "arccos" => DerAcos(uop),
-                "arcsin" => DerAsin(uop),
-                "arctan" => DerAtan(uop),
-                "arccotan" => DerAcotan(uop),
-                "cosh" => DerCosh(uop),
-                "sinh" => DerSinh(uop),
-                "tanh" => DerTanh(uop),
-                "cotanh" => DerCotanh(uop),
-                _ => throw new DvDerivativeMismatchException(uop.GetType(), $"no such expr name: {uop.Sign}")
+                DvOpSigns.cos => DerCos(uop),
+                DvOpSigns.sin => DerSin(uop),
+                DvOpSigns.tan => DerTan(uop),
+                DvOpSigns.cotan => DerCotan(uop),
+                DvOpSigns.acos => DerAcos(uop),
+                DvOpSigns.asin => DerAsin(uop),
+                DvOpSigns.atan => DerAtan(uop),
+                DvOpSigns.acotan => DerAcotan(uop),
+                DvOpSigns.cosh => DerCosh(uop),
+                DvOpSigns.sinh => DerSinh(uop),
+                DvOpSigns.tanh => DerTanh(uop),
+                DvOpSigns.cotanh => DerCotanh(uop),
+                _ => throw new DvDerivativeMismatchException(uop, $"no such expr name: {uop.Sign}")
             };
 
             // -sin(x)
@@ -109,10 +91,10 @@ namespace Derivas.Expression
         {
             return bop.Sign switch
             {
-                "-" => Subtraction(bop),
-                "/" => Division(bop),
-                "^" => Power(bop),
-                _ => throw new DvDerivativeMismatchException(bop.GetType(), $"no such sign: {bop.Sign}")
+                DvOpSigns.sub => Subtraction(bop),
+                DvOpSigns.div => Division(bop),
+                DvOpSigns.pow => Power(bop),
+                _ => throw new DvDerivativeMismatchException(bop, $"no such sign: {bop.Sign}")
             };
 
             IDvExpr Subtraction(BinaryOperator op)
@@ -151,9 +133,9 @@ namespace Derivas.Expression
         {
             return caop.Sign switch
             {
-                "+" => Addition(caop),
-                "*" => Multiplication(caop),
-                _ => throw new DvDerivativeMismatchException(caop.GetType(), $"no such sign: {caop.Sign}")
+                DvOpSigns.add => Addition(caop),
+                DvOpSigns.mul => Multiplication(caop),
+                _ => throw new DvDerivativeMismatchException(caop, $"no such sign: {caop.Sign}")
             };
 
             IDvExpr Addition(CommutativeAssociativeOperator op)
@@ -161,31 +143,19 @@ namespace Derivas.Expression
 
             IDvExpr Multiplication(CommutativeAssociativeOperator op)
             {
-                var fst = op.Operands.ElementAt(0);
+                var first = op.Operands.ElementAt(0);
                 if (op.Operands.Count() == 2)
                 {
-                    var snd = op.Operands.ElementAt(1);
+                    var second = op.Operands.ElementAt(1);
 
-                    return Add(Mul(Get(fst), snd), Mul(Get(snd), fst));
+                    return Add(Mul(Get(first), second), Mul(Get(second), first));
                 }
 
                 var other = op.CreateInstance(op.Operands.Skip(1).ToArray());
-                return Add(Mul(Get(fst), other), Mul(Get(other), fst));
+                return Add(Mul(Get(first), other), Mul(Get(other), first));
             }
         }
 
         #endregion commutative associative operator
-    }
-
-    public static partial class DvOps
-    {
-        public static IDvExpr Der(object expr, object by)
-        {
-            var symBy = CheckExpr(by) as Symbol ??
-                throw new ArgumentOutOfRangeException(
-                    $"Should be one of 'string' or 'Symbol', got {by.GetType()}"
-                );
-            return new Derivative(CheckExpr(expr), symBy).Get();
-        }
     }
 }

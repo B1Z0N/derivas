@@ -5,23 +5,6 @@ using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("DerivasTests")]
 
-namespace Derivas.Exception
-{
-    /// <summary>
-    /// Symbol value not supplied during calculation
-    /// </summary>
-    public class DvExpressionMismatchException : DvBaseException
-    {
-        public Type WrongType;
-
-        public DvExpressionMismatchException(Type t)
-            : base($"You can't pass in {t} type, use int, string or IDvExpr")
-        {
-            WrongType = t;
-        }
-    }
-}
-
 /// <summary>
 /// Main userspace interface
 /// (everything containing `Dv` is exposed to the user)
@@ -83,17 +66,5 @@ namespace Derivas.Expression
             protected override CloneableExpr CreateFromClonable(params CloneableExpr[] expr)
                 => new Wrapper(Inner);
         }
-    }
-
-    public static partial class DvOps
-    {
-        /// <summary>
-        /// Shortcut handlers, transforms numeric -> Const, string -> Symbol, IDvExpr -> IDvExpr
-        /// and throws on others
-        /// </summary>
-        private static CloneableExpr CheckExpr(object arg) => Utils.CheckExpr(arg);
-
-        /// <summary>Same as single arg function</summary>
-        private static CloneableExpr[] CheckExpr(object[] args) => Utils.CheckExpr(args);
     }
 }

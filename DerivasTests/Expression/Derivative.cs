@@ -1,11 +1,13 @@
+using Derivas.Exception;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using static Derivas.Expression.DvOps;
 
 namespace Derivas.Expression.Tests
 {
+    using static DvOps;
+
     [TestFixture]
     public class DerivativeTests : TestUtility
     {
@@ -43,7 +45,6 @@ namespace Derivas.Expression.Tests
         {
             var d = new Dictionary<string, double>() { { "x", 1 } };
 
-
             Assert.AreEqual(Der(Log(1), "x").Calculate(EmptyNameVal), 0d);
             Assert.AreEqual(Der(Log("x"), "x").Calculate(d), 1d);
             Assert.AreEqual(Der(Log("x"), "x"), Der(Log("x", DvConsts.E), "x"));
@@ -69,7 +70,6 @@ namespace Derivas.Expression.Tests
                     pair.Value.Calculate(d)
                 );
             }
-
         }
 
         [Test()]

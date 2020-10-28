@@ -2,20 +2,6 @@
 using System;
 using System.Collections.Generic;
 
-namespace Derivas.Exception
-{
-    /// <summary>
-    /// Symbol value not supplied during calculation
-    /// </summary>
-    public class DvSymbolMismatchException : DvBaseException
-    {
-        public string ShouldBe;
-        public DvSymbolMismatchException(string shouldBe)
-            : base($"Value of '{shouldBe}' Symbol is not included in the dictionary")
-            => ShouldBe = shouldBe;
-    }
-}
-
 namespace Derivas.Expression
 {
     internal class Constant : CloneableExpr
@@ -60,11 +46,5 @@ namespace Derivas.Expression
 
         protected override CloneableExpr CreateFromClonable(params CloneableExpr[] expr)
             => expr.Length == 0 ? new Symbol(Name) : expr[0].CreateInstance();
-    }
-
-    public static partial class DvOps
-    {
-        public static IDvExpr Const(double val) => new Constant(val);
-        public static IDvExpr Sym(string name) => new Symbol(name);
     }
 }

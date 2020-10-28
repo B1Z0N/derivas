@@ -22,9 +22,9 @@ namespace Derivas.Expression
         private Func<double, double, double> BinFunc { get; }
 
         public BinaryOperator(
-             CloneableExpr fst, CloneableExpr snd, string sign, int prio,
+             CloneableExpr first, CloneableExpr second, string sign, int prio,
             Func<double, double, double> op)
-            :base(fst, snd)
+            : base(first, second)
         {
             (Sign, Priority) = (sign, prio);
             OpFunc = (double[] args) => op(args[0], args[1]);
@@ -47,18 +47,5 @@ namespace Derivas.Expression
                 return new BinaryOperator(operands[0].CreateInstance(), operands[1].CreateInstance(), Sign, Priority, BinFunc);
             }
         }
-    }
-
-    public static partial class DvOps
-    {
-        public static IDvExpr Div(object fst, object snd)
-            => new BinaryOperator(CheckExpr(fst), CheckExpr(snd), "/", 1, (fst, snd) => fst / snd);
-
-        public static IDvExpr Sub(object fst, object snd)
-            => new BinaryOperator(CheckExpr(fst), CheckExpr(snd), "-", 0, (fst, snd) => fst - snd);
-
-        public static IDvExpr Pow(object bas, object pow) => new BinaryOperator(
-            CheckExpr(bas), CheckExpr(pow), "^", 2, (bas, pow) => Math.Pow(bas, pow)
-        );
     }
 }

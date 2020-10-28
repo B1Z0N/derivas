@@ -3,11 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using static Derivas.Expression.DvOps;
 
 namespace Derivas.Expression.Tests
 {
-    
+    using static DvOps;
+
     public class TestUtility
     {
         public static Dictionary<string, double> EmptyNameVal = new Dictionary<string, double>();

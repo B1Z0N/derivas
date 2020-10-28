@@ -1,9 +1,7 @@
+using Derivas.Exception;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-
-using Derivas.Expression;
-using Derivas.Exception;
 using System.Globalization;
 
 namespace Derivas.Expression.Tests
@@ -22,7 +20,7 @@ namespace Derivas.Expression.Tests
         public void TestDict()
         {
             Assert.AreEqual(
-                DvOps.Dict.Add("x", 1).Add("y", 3).Get(), 
+                DvOps.Dict.Add("x", 1).Add("y", 3).Get(),
                 new Dictionary<string, double>() { { "x", 1 }, { "y", 3 } }
             );
         }

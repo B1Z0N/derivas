@@ -1,9 +1,10 @@
 using Derivas.Exception;
 using NUnit.Framework;
-using static Derivas.Expression.DvOps;
 
 namespace Derivas.Expression.Tests
 {
+    using static DvOps;
+
     [TestFixture]
     public class TrivialTests : TestUtility
     {

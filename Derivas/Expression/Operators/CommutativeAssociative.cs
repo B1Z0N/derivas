@@ -1,21 +1,6 @@
-﻿using Derivas.Exception;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
-namespace Derivas.Exception
-{
-    /// <summary>
-    /// Wrong number of arguments passed
-    /// </summary>
-    public class DvNotEnoughArgumentsException : DvBaseException
-    {
-        public int NOrMore;
-        public DvNotEnoughArgumentsException(int nOrMore)
-            : base($"Not enough arguments passed, accepts {nOrMore} or more")
-            => NOrMore = nOrMore;
-    }
-}
 
 namespace Derivas.Expression
 {
@@ -52,7 +37,6 @@ namespace Derivas.Expression
 
         public bool IsSameType(CloneableExpr to)
             => to is CommutativeAssociativeOperator op && op.Sign == Sign;
-
 
         /// <summary>
         /// Transform Caop(1, 2, Caop(1, 2, 3)) to Caop(1, 2, 3, 4)
@@ -142,44 +126,12 @@ namespace Derivas.Expression
         #region equals related stuff
 
         public override bool Equals(IDvExpr expr)
-            => expr is CommutativeAssociativeOperator @operator && 
+            => expr is CommutativeAssociativeOperator @operator &&
             Sign == @operator.Sign && new HashSet<IDvExpr>(Operands)
             .SetEquals(@operator.Operands);
 
         public override int GetHashCode() => HashCode.Combine(base.GetHashCode(), Sign);
 
-        #endregion
-    }
-
-    public static partial class DvOps
-    {
-        #region helpers
-
-        private static Func<double[], double> Addition =
-            args => args.Aggregate(0d, (fst, snd) => fst + snd);
-
-        private static Func<double[], double> Multiplication =
-            args => args.Aggregate(1d, (fst, snd) => fst * snd);
-
-        private static IDvExpr CheckForLessThanTwo(Func<CloneableExpr[], CloneableExpr> createF, params CloneableExpr[] args)
-            => args.Count() < 2 ? throw new DvNotEnoughArgumentsException(2) : createF(args);
-
-        #endregion helpers
-
-        #region userspace methods
-
-        public static IDvExpr Add(params object[] args)
-            => CheckForLessThanTwo(
-                ops => new CommutativeAssociativeOperator("+", 0, Addition, ops),
-                CheckExpr(args)
-            );
-
-        public static IDvExpr Mul(params object[] args)
-            => CheckForLessThanTwo(
-                ops => new CommutativeAssociativeOperator("*", 1, Multiplication, ops),
-                CheckExpr(args)
-            );
-
-        #endregion userspace methods
+        #endregion equals related stuff
     }
 }
