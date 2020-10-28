@@ -1,15 +1,15 @@
-﻿using System;
-using System.Linq;
-
+﻿using Derivas.Exception;
 using Derivas.Expression;
-using Derivas.Exception;
 using Derivas.Simplifier;
+using System;
+using System.Linq;
 
 namespace Derivas
 {
     public static class DvOps
     {
         # region binary operators
+
         public static IDvExpr Div(object first, object second)
             => new BinaryOperator(CheckExpr(first), CheckExpr(second), DvOpSigns.div, 1, (first, second) => first / second);
 
@@ -89,7 +89,7 @@ namespace Derivas
             => new UnaryOperator(CheckExpr(of), DvOpSigns.cotanh, of => 1 / Math.Tanh(of));
 
         #endregion
-       
+
         #region other
 
         /// <summary>
@@ -131,10 +131,9 @@ namespace Derivas
         public static DvDict Dict => new DvDict();
 
         public static DvSimplifier Simpl(IDvExpr expr) => DvSimplifier.Create(expr);
-        
+
         #endregion
     }
-
 
     /// <summary>Class with common naming constants</summary>
     internal static class DvOpSigns
@@ -158,6 +157,4 @@ namespace Derivas
         public const string tanh = "tanh";
         public const string cotanh = "cotanh";
     }
-
-
 }

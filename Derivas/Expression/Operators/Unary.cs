@@ -23,7 +23,7 @@ namespace Derivas.Expression
         public override string Sign { get; }
         public override int Priority { get; } = int.MaxValue;
 
-        public override Func<double[], double> OpFunc => (args) => UnFunc(args[0]); 
+        public override Func<double[], double> OpFunc => (args) => UnFunc(args[0]);
 
         #endregion abstract class implementation
     }

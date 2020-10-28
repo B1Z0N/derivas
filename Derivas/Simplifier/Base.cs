@@ -1,11 +1,9 @@
 ﻿using Derivas.Expression;
-using Derivas.Simplifier;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Derivas.Simplifier
 {
-
     /// <summary>Interface to simplify IDvExpr</summary>
     public interface IDvSimplifier
     {
@@ -62,6 +60,5 @@ namespace Derivas.Simplifier
         protected virtual IDvExpr Get(BinaryOperator expr) => Get(expr as OrderedOperator);
 
         protected virtual IDvExpr Get(Logarithm log) => Get(log as BinaryOperator);
-
     }
 }

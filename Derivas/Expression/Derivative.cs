@@ -1,5 +1,4 @@
 ﻿using Derivas.Exception;
-using System;
 using System.Linq;
 
 namespace Derivas.Expression

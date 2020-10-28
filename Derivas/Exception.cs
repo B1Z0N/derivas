@@ -34,6 +34,7 @@ namespace Derivas.Exception
     {
         public Type WrongType;
         public string Other;
+
         public DvDerivativeMismatchException(IDvExpr op, string other = null) : base(
             $"There is no DvDerivative handler for type {op.GetType()}" +
             other == null ? "." : $" and this: '{other}'.")
@@ -48,6 +49,7 @@ namespace Derivas.Exception
     public class DvSymbolMismatchException : DvBaseException
     {
         public string ShouldBe;
+
         public DvSymbolMismatchException(string shouldBe)
             : base($"Value of '{shouldBe}' Symbol is not included in the dictionary")
             => ShouldBe = shouldBe;
@@ -59,6 +61,7 @@ namespace Derivas.Exception
     public class DvNotEnoughArgumentsException : DvBaseException
     {
         public int NOrMore;
+
         public DvNotEnoughArgumentsException(int nOrMore)
             : base($"Not enough arguments passed, accepts {nOrMore} or more")
             => NOrMore = nOrMore;

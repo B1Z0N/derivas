@@ -155,8 +155,11 @@ namespace Derivas.Simplifier
     internal class FuncSimplifier : BaseSimplifier
     {
         private Func<IDvExpr, IDvExpr> SimplF { get; }
+
         public FuncSimplifier(Func<IDvExpr, IDvExpr> simplF) => SimplF = simplF;
+
         protected override IDvExpr Get(IDvExpr expr) => SimplF(expr);
+
         protected override IDvExpr Get(Operator expr) => SimplF(base.Get(expr));
     }
 

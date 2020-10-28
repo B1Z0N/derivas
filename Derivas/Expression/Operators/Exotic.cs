@@ -4,14 +4,14 @@ namespace Derivas.Expression
 {
     internal class Logarithm : BinaryOperator
     {
-        public CloneableExpr Of { get => First; set => First = value; } 
+        public CloneableExpr Of { get => First; set => First = value; }
         public CloneableExpr Base { get => Second; set => Second = value; }
 
         public Logarithm(CloneableExpr of, CloneableExpr bas = null)
             : base(of, bas ?? DvOps.DvConsts.CL_E, DvOpSigns.log, int.MaxValue, Math.Log)
-        { 
+        {
         }
-        
+
         #region abstract class implementation
 
         public override string Represent()
@@ -29,8 +29,7 @@ namespace Derivas.Expression
                 return new Logarithm(operands[0].CreateInstance(), operands[1].CreateInstance());
             }
         }
-       
-        #endregion abstract class implementation
 
+        #endregion abstract class implementation
     }
 }

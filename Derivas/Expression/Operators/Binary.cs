@@ -24,7 +24,7 @@ namespace Derivas.Expression
         public BinaryOperator(
              CloneableExpr first, CloneableExpr second, string sign, int prio,
             Func<double, double, double> op)
-            :base(first, second)
+            : base(first, second)
         {
             (Sign, Priority) = (sign, prio);
             OpFunc = (double[] args) => op(args[0], args[1]);

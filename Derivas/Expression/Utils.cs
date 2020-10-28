@@ -1,8 +1,7 @@
-﻿using System;
-using System.Linq;
+﻿using Derivas.Exception;
+using System;
 using System.Collections.Generic;
-
-using Derivas.Exception;
+using System.Linq;
 
 namespace Derivas.Expression
 {
@@ -12,6 +11,7 @@ namespace Derivas.Expression
     public class DvDict
     {
         private Dictionary<string, double> Inner_ = new Dictionary<string, double>();
+
         public IDictionary<string, double> Get() => Inner_;
 
         public DvDict Add(string key, double val)
@@ -19,7 +19,6 @@ namespace Derivas.Expression
             Inner_.Add(key, val);
             return this;
         }
-
     }
 
     internal static class Utils

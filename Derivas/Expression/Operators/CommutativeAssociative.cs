@@ -1,5 +1,4 @@
-﻿using Derivas.Exception;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -38,7 +37,6 @@ namespace Derivas.Expression
 
         public bool IsSameType(CloneableExpr to)
             => to is CommutativeAssociativeOperator op && op.Sign == Sign;
-
 
         /// <summary>
         /// Transform Caop(1, 2, Caop(1, 2, 3)) to Caop(1, 2, 3, 4)
@@ -128,12 +126,12 @@ namespace Derivas.Expression
         #region equals related stuff
 
         public override bool Equals(IDvExpr expr)
-            => expr is CommutativeAssociativeOperator @operator && 
+            => expr is CommutativeAssociativeOperator @operator &&
             Sign == @operator.Sign && new HashSet<IDvExpr>(Operands)
             .SetEquals(@operator.Operands);
 
         public override int GetHashCode() => HashCode.Combine(base.GetHashCode(), Sign);
 
-        #endregion
+        #endregion equals related stuff
     }
 }

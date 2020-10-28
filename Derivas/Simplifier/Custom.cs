@@ -29,12 +29,12 @@ namespace Derivas.Simplifier
         protected override IDvExpr Get(CommutativeAssociativeOperator expr)
         {
             expr = base.Get(expr) as CommutativeAssociativeOperator;
-            Func<CloneableExpr, IEnumerable<CloneableExpr>> lst = 
+            Func<CloneableExpr, IEnumerable<CloneableExpr>> lst =
                 el => new List<CloneableExpr>() { el };
 
             return From is CommutativeAssociativeOperator from && from.Sign == expr.Sign ?
                 expr.ReplaceSubOperands(from.Operands, lst(To)) :
-                expr.ReplaceSubOperands(lst(From), lst(To))     ;
+                expr.ReplaceSubOperands(lst(From), lst(To));
         }
     }
 
