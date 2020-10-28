@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 
-using Derivas.Exception;
-using Derivas.Expression;
-
 namespace Derivas.Expression
 {
     /// <summary>

@@ -5,24 +5,6 @@ using static Derivas.Expression.DvOps;
 
 namespace Derivas.Expression
 {
-    /// <summary>
-    /// No derivative rule for this expression
-    /// </summary>
-    public class DvDerivativeMismatchException : DvBaseException
-    {
-        public Type WrongType;
-        public string Other;
-        public DvDerivativeMismatchException(Type t, string other = null) : base(
-            $"There is no DvDerivative handler for type {t}" +
-            other == null ? "." : $" and this: '{other}'.")
-        {
-            (WrongType, Other) = (t, other);
-        }
-    }
-}
-
-namespace Derivas.Expression
-{
     internal class Derivative
     {
         public IDvExpr Original { get; }

@@ -5,23 +5,6 @@ using System.Runtime.CompilerServices;
 
 [assembly: InternalsVisibleTo("DerivasTests")]
 
-namespace Derivas.Exception
-{
-    /// <summary>
-    /// Symbol value not supplied during calculation
-    /// </summary>
-    public class DvExpressionMismatchException : DvBaseException
-    {
-        public Type WrongType;
-
-        public DvExpressionMismatchException(Type t)
-            : base($"You can't pass in {t} type, use int, string or IDvExpr")
-        {
-            WrongType = t;
-        }
-    }
-}
-
 /// <summary>
 /// Main userspace interface
 /// (everything containing `Dv` is exposed to the user)

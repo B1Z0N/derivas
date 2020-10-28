@@ -3,20 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Derivas.Exception
-{
-    /// <summary>
-    /// Wrong number of arguments passed
-    /// </summary>
-    public class DvNotEnoughArgumentsException : DvBaseException
-    {
-        public int NOrMore;
-        public DvNotEnoughArgumentsException(int nOrMore)
-            : base($"Not enough arguments passed, accepts {nOrMore} or more")
-            => NOrMore = nOrMore;
-    }
-}
-
 namespace Derivas.Expression
 {
     internal class CommutativeAssociativeOperator : Operator
