@@ -65,14 +65,17 @@ namespace Derivas.Expression
 
         public static CloneableExpr[] CheckExpr(object[] args) => args.Select(CheckExpr).ToArray();
 
-        internal static Dictionary<string, (int argN, Func<IDvExpr[], IDvExpr>)> DvTypeMap =>
+        internal static Dictionary<string, (int argN, Func<IDvExpr[], IDvExpr> createF)> DvOpMap =>
             new Dictionary<string, (int argN, Func<IDvExpr[], IDvExpr>)>
             {
-                [DvOpSigns.add] = (-1, DvOps.Add),
-                [DvOpSigns.mul] = (-1, DvOps.Mul),
+                [DvOpSigns.add] = (2, DvOps.Add),
+                [DvOpSigns.mul] = (2, DvOps.Mul),
                 [DvOpSigns.sub] = (2, (args) => DvOps.Sub(args[0], args[1])),
                 [DvOpSigns.div] = (2, (args) => DvOps.Div(args[0], args[1])),
                 [DvOpSigns.pow] = (2, (args) => DvOps.Pow(args[0], args[1])),
+
+                [DvOpSigns.log] = (2, (args) => DvOps.Log(args[0], args[1])),
+
                 [DvOpSigns.cos] = (1, (args) => DvOps.Cos(args.First())),
                 [DvOpSigns.sin] = (1, (args) => DvOps.Sin(args.First())),
                 [DvOpSigns.tan] = (1, (args) => DvOps.Tan(args.First())),
@@ -87,16 +90,20 @@ namespace Derivas.Expression
                 [DvOpSigns.cotanh] = (1, (args) => DvOps.Cotanh(args.First())),
             };
 
-
         /// <summary>Class with common naming constants</summary>
         internal static class DvOpSigns
         {
+            public const string constant = "const";
+            public const string symbol = "sym";
+
             public const string add = "+";
             public const string mul = "*";
             public const string div = "/";
             public const string sub = "-";
             public const string pow = "^";
+
             public const string log = "log";
+
             public const string cos = "cos";
             public const string sin = "sin";
             public const string tan = "tan";

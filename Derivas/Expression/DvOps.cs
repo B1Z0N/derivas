@@ -3,6 +3,7 @@ using Derivas.Expression;
 using Derivas.Simplifier;
 using System;
 using System.Linq;
+using Derivas.Parser;
 
 namespace Derivas
 {
@@ -133,6 +134,8 @@ namespace Derivas
         public static DvDict Dict => new DvDict();
 
         public static DvSimplifier Simpl(IDvExpr expr) => DvSimplifier.Create(expr);
+
+        public static IDvExpr Parse(string expr) => Parser.Parser.Parse(expr);
 
         #endregion
     }

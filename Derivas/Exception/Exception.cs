@@ -13,6 +13,8 @@ namespace Derivas.Exception
         }
     }
 
+    #region expression exceptions
+
     /// <summary>
     /// Symbol value not supplied during calculation
     /// </summary>
@@ -66,4 +68,20 @@ namespace Derivas.Exception
             : base($"Not enough arguments passed, accepts {nOrMore} or more")
             => NOrMore = nOrMore;
     }
+
+    #endregion
+
+    #region parser exceptions
+
+    /// <summary>
+    /// Base class for parser exceptions
+    /// </summary>
+    public class DvParserException : DvBaseException
+    {
+        public DvParserException(string msg) : base(msg)
+        {
+        }
+    }
+
+    #endregion
 }

@@ -5,6 +5,8 @@ using System.Linq;
 
 namespace Derivas.Simplifier
 {
+    using static Utils;
+
     internal sealed class ConstSimplifier : BaseSimplifier
     {
         private ConstSimplifier()
