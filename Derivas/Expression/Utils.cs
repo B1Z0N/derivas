@@ -1,6 +1,7 @@
 ﻿using Derivas.Exception;
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 
 namespace Derivas.Expression
@@ -63,5 +64,58 @@ namespace Derivas.Expression
         }
 
         public static CloneableExpr[] CheckExpr(object[] args) => args.Select(CheckExpr).ToArray();
+
+        internal static Dictionary<string, (int argN, Func<IDvExpr[], IDvExpr> createF)> DvOpMap =>
+            new Dictionary<string, (int argN, Func<IDvExpr[], IDvExpr>)>
+            {
+                [DvOpSigns.add] = (2, DvOps.Add),
+                [DvOpSigns.mul] = (2, DvOps.Mul),
+                [DvOpSigns.sub] = (2, (args) => DvOps.Sub(args[0], args[1])),
+                [DvOpSigns.div] = (2, (args) => DvOps.Div(args[0], args[1])),
+                [DvOpSigns.pow] = (2, (args) => DvOps.Pow(args[0], args[1])),
+
+                [DvOpSigns.log] = (2, (args) => DvOps.Log(args[0], args[1])),
+
+                [DvOpSigns.cos] = (1, (args) => DvOps.Cos(args.First())),
+                [DvOpSigns.sin] = (1, (args) => DvOps.Sin(args.First())),
+                [DvOpSigns.tan] = (1, (args) => DvOps.Tan(args.First())),
+                [DvOpSigns.cotan] = (1, (args) => DvOps.Cotan(args.First())),
+                [DvOpSigns.acos] = (1, (args) => DvOps.Acos(args.First())),
+                [DvOpSigns.asin] = (1, (args) => DvOps.Asin(args.First())),
+                [DvOpSigns.atan] = (1, (args) => DvOps.Atan(args.First())),
+                [DvOpSigns.acotan] = (1, (args) => DvOps.Acotan(args.First())),
+                [DvOpSigns.cosh] = (1, (args) => DvOps.Cosh(args.First())),
+                [DvOpSigns.sinh] = (1, (args) => DvOps.Sinh(args.First())),
+                [DvOpSigns.tanh] = (1, (args) => DvOps.Tanh(args.First())),
+                [DvOpSigns.cotanh] = (1, (args) => DvOps.Cotanh(args.First())),
+            };
+
+        /// <summary>Class with common naming constants</summary>
+        internal static class DvOpSigns
+        {
+            public const string constant = "const";
+            public const string symbol = "sym";
+
+            public const string add = "+";
+            public const string mul = "*";
+            public const string div = "/";
+            public const string sub = "-";
+            public const string pow = "^";
+
+            public const string log = "log";
+
+            public const string cos = "cos";
+            public const string sin = "sin";
+            public const string tan = "tan";
+            public const string cotan = "cotan";
+            public const string acos = "acos";
+            public const string asin = "asin";
+            public const string atan = "atan";
+            public const string acotan = "acotan";
+            public const string cosh = "cosh";
+            public const string sinh = "sinh";
+            public const string tanh = "tanh";
+            public const string cotanh = "cotanh";
+        }
     }
 }

@@ -4,6 +4,7 @@ using System.Linq;
 namespace Derivas.Expression
 {
     using static DvOps;
+    using static Utils;
 
     internal class Derivative
     {

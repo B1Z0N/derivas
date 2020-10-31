@@ -2,6 +2,8 @@
 
 namespace Derivas.Expression
 {
+    using static Utils;
+
     internal class Logarithm : BinaryOperator
     {
         public CloneableExpr Of { get => First; set => First = value; }

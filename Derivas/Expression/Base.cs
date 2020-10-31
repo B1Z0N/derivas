@@ -30,7 +30,7 @@ namespace Derivas.Expression
         /// <summary>Deep copy if no args and instance with new params else</summary>
         protected abstract CloneableExpr CreateFromClonable(params CloneableExpr[] expr);
 
-        /// <summary>Ensure that all IDvExpr is IClonable</summary>
+        /// <summary>Ensure that all IDvExpr is Clonable</summary>
         public CloneableExpr CreateInstance(params IDvExpr[] exprs)
             => CreateFromClonable(exprs.Select(
                 expr => expr is CloneableExpr clexpr ? clexpr : new Wrapper(expr)
@@ -47,7 +47,7 @@ namespace Derivas.Expression
         #endregion IDvExpr abstract implementation
 
         /// <summary>
-        /// Class to wrap all "uselses" userspace IDvExpr in IClonableExpr
+        /// Class to wrap all "useless" userspace IDvExpr in CloneableExpr
         /// </summary>
         public class Wrapper : CloneableExpr
         {

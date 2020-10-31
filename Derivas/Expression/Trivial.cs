@@ -40,7 +40,7 @@ namespace Derivas.Expression
         public override bool Equals(object obj) => Equals(obj as IDvExpr);
 
         public override bool Equals(IDvExpr other)
-            => (other as Symbol)?.Name == Name;
+            => other is Symbol sym ? sym.Name == Name : false;
 
         public override int GetHashCode() => HashCode.Combine(Name, GetType());
 
