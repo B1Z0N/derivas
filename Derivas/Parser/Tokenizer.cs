@@ -147,7 +147,7 @@ namespace Derivas.Parser
         {
             if (char.IsLetter(ch))
                 return TokenType.Variable;
-            if (char.IsDigit(ch))
+            if (char.IsDigit(ch) || ch == '.')
                 return TokenType.Number;
             if (char.IsWhiteSpace(ch))
                 return TokenType.WhiteSpace;
