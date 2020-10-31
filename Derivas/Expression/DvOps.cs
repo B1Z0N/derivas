@@ -6,6 +6,8 @@ using System.Linq;
 
 namespace Derivas
 {
+    using static Utils;
+
     public static class DvOps
     {
         # region binary operators
@@ -133,28 +135,5 @@ namespace Derivas
         public static DvSimplifier Simpl(IDvExpr expr) => DvSimplifier.Create(expr);
 
         #endregion
-    }
-
-    /// <summary>Class with common naming constants</summary>
-    internal static class DvOpSigns
-    {
-        public const string add = "+";
-        public const string mul = "*";
-        public const string div = "/";
-        public const string sub = "-";
-        public const string pow = "^";
-        public const string log = "log";
-        public const string cos = "cos";
-        public const string sin = "sin";
-        public const string tan = "tan";
-        public const string cotan = "cotan";
-        public const string acos = "acos";
-        public const string asin = "asin";
-        public const string atan = "atan";
-        public const string acotan = "acotan";
-        public const string cosh = "cosh";
-        public const string sinh = "sinh";
-        public const string tanh = "tanh";
-        public const string cotanh = "cotanh";
     }
 }
