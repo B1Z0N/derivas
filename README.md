@@ -78,6 +78,10 @@ namespace Usage
             Print(simplified, finDict);
             // 3 + cos(x) ^ 2
             // 4
+            
+            var parsedExpr = Parse("sin(x) ^ 2 + cos(x)^2");
+            Print(parsedExpr, finDict);
+            // the same as the original
         }
 
         private static void Print(IDvExpr expr, Dictionary<string, double> dict)
@@ -210,6 +214,10 @@ All exceptions are located in `Derivas.Exception` namespace.
 # Utility
 
 Some useful features to help you using the library.
+
+### Parse
+
+Takes string and returns it's `IDvExpr` equivalent. Temporarily not accepting numbers with exponent in them(like `1e-10`). 
 
 ### Dict
 
