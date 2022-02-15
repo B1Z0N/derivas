@@ -30,6 +30,7 @@ P.S. this is just my project to learn some C# basics, so take it easy
 - [About](#about)
 - [Notes](#notes)
 - [Table of contents](#table-of-contents)
+- [How to run](#how-to-run)
 - [Example](#example)
 - [Entities](#entities)
     + [`IDvExpr`](#idvexpr)
@@ -47,6 +48,15 @@ P.S. this is just my project to learn some C# basics, so take it easy
 - [Utility](#utility)
     + [Dict](#dict)
     + [Constants](#constants)
+
+# How to run
+
+Open sln in visual studio/rider/... or from the command line:
+
+```
+dotnet build Derivas # to build from cli
+dotnet test Derivas.Tests # to test
+```
 
 # Example
 
