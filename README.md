@@ -105,7 +105,7 @@ namespace Usage
 
 # Entities
 
-There are two main entities in Derivas: `Expression` and `Simplifier`. Which implemented as interfaces: `IDvExpr` and `IDvSimplifier` accordingly.
+There are two main entities in Derivas: `Expression` and `Simplifier`, which implemented as interfaces: `IDvExpr` and `IDvSimplifier` accordingly.
 
 ### `IDvExpr`
 
@@ -147,7 +147,7 @@ Mul(3, 5, "x") -> Add(8, "x")
 
 #### ByPolynom
 
-Collect similiar expressions in one scope:
+Collect similar expressions in one scope:
 ```csharp
 Add("x", "x", "x") -> Mul(3, "x")
 Add("x", "y", "x") -> Add(Mul(2, "x"), "y")
@@ -155,7 +155,7 @@ Add("x", "y", "x") -> Add(Mul(2, "x"), "y")
 
 #### ByPartial
 
-Partially replace some symbols from dictionary or by hand:
+Partially replace some symbols from the dictionary or by hand:
 The `Dict` is explained [here](#utility)
 ```csharp
 IDictionary<string, double> d = Dict.Add("x", 5).Add("y", 3).Get();
@@ -168,7 +168,7 @@ var orTheSame = Simpl(expr).ByPartial("x", 5).ByPartial("y", 3).Simplify();
 
 #### ByCustom
 
-Replace one IDvExpr with other or use your own simplfiers:
+Replace one IDvExpr with another or use your own simplifiers:
 ```csharp
 var expr = Log(Mul(2, "x"), 3);
 
@@ -219,11 +219,11 @@ All exceptions are located in `Derivas.Exception` namespace.
 
 * `DvDerivativeMimatchException` - no derivative rule for this expression
 
-* `DvNotEnoughArguments` - wrong number of arguments passed to the operator
+* `DvNotEnoughArguments` - the wrong number of arguments passed to the operator
 
 # Utility
 
-Some useful features to help you using the library.
+Some useful features to help you use the library.
 
 ### Parse
 
